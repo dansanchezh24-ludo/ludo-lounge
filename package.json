@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-  "dev": "vite",
-  "build": "npx vite build",
-  "preview": "vite preview"
-
+    "dev": "vite",
+    "build": "npx vite build",
+    "preview": "vite preview",
+    "postinstall": "chmod +x ./node_modules/.bin/vite || echo 'Windows detected, skipping chmod'"
   },
   "dependencies": {
     "react": "^18.2.0",
