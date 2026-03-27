@@ -1,15 +1,14 @@
 // api/orders.js
-import fs from "fs";
 import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
-
 dotenv.config();
 
 const resend = new Resend(process.env.RESEND_KEY);
-const ordersFile = "./backend/orders.json";
-
-// Asegurarse de que el archivo existe
-if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, "[]");
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 // Función para enviar correo según estatus
 const sendStatusEmail = async (order) => {
@@ -46,33 +45,54 @@ const sendStatusEmail = async (order) => {
 // Handler principal
 export default async function handler(req, res) {
   try {
-    const orders = JSON.parse(fs.readFileSync(ordersFile));
-
+    // POST — crear nuevo pedido
     if (req.method === "POST") {
-      const newOrder = { id: Date.now().toString(), ...req.body, createdAt: new Date() };
-      orders.push(newOrder);
-      fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
-      return res.status(201).json({ success: true, orderId: newOrder.id });
+      const { data, error } = await supabase
+        .from("orders")
+        .insert([req.body])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return res.status(201).json({ success: true, orderId: data.id });
     }
 
+    // GET — obtener todos los pedidos
     if (req.method === "GET") {
-      return res.status(200).json(orders);
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return res.status(200).json(data);
     }
 
+    // PUT — actualizar estatus de un pedido
     if (req.method === "PUT") {
       const id = req.query.id;
-      const index = orders.findIndex((o) => o.id === id);
-      if (index === -1) return res.status(404).json({ error: "Pedido no encontrado" });
 
-      const order = orders[index];
+      // Obtener el pedido actual
+      const { data: order, error: fetchError } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (fetchError || !order)
+        return res.status(404).json({ error: "Pedido no encontrado" });
+
       const nextStatus = req.body.status || order.status;
-
       const transferenciaFlow = ["pendiente", "pagado", "enviado", "entregado"];
       const paypalFlow = ["pagado", "enviado", "entregado"];
 
+      // Validar flujo de estatus
       if (
-        (order.paymentMethod === "transferencia" && transferenciaFlow.indexOf(nextStatus) < transferenciaFlow.indexOf(order.status)) ||
-        (order.paymentMethod === "paypal" && paypalFlow.indexOf(nextStatus) < paypalFlow.indexOf(order.status))
+        (order.payment_method === "transferencia" &&
+          transferenciaFlow.indexOf(nextStatus) <
+            transferenciaFlow.indexOf(order.status)) ||
+        (order.payment_method === "paypal" &&
+          paypalFlow.indexOf(nextStatus) < paypalFlow.indexOf(order.status))
       ) {
         return res.status(400).json({ error: "Flujo inválido" });
       }
@@ -81,12 +101,17 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Número de guía requerido" });
       }
 
-      const updatedOrder = { ...order, ...req.body, status: nextStatus };
-      orders[index] = updatedOrder;
-      fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
+      // Actualizar en Supabase
+      const { data: updatedOrder, error: updateError } = await supabase
+        .from("orders")
+        .update({ ...req.body, status: nextStatus })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
 
       sendStatusEmail(updatedOrder);
-
       return res.status(200).json({ success: true, order: updatedOrder });
     }
 
