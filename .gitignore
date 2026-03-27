@@ -3,3 +3,5 @@ dist
 npm
 vite
 .env
+.vercel
+.env*.local

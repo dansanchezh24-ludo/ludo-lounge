@@ -1,0 +1,182 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* HEADER */
+header {
+  background: #111;
+  color: #fff;
+}
+
+/* TITULOS */
+h1, h2, h3 {
+  margin-bottom: 10px;
+}
+
+/* CATEGORÍAS */
+section {
+  margin-bottom: 40px;
+}
+
+/* GRID PRODUCTOS */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+/* CARD PRODUCTO */
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+/* IMAGEN */
+.product-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* PRECIO */
+.price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #28a745;
+}
+
+/* BOTONES */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* BOTÓN PRINCIPAL */
+.btn-primary {
+  background: #28a745;
+  color: #fff;
+}
+
+/* BOTÓN SECUNDARIO */
+.btn-secondary {
+  background: #007bff;
+  color: #fff;
+}
+
+/* CARRITO */
+.cart-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* ITEM CARRITO */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* TOTAL */
+.cart-total {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* CHECKOUT */
+.checkout-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* INPUTS */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* ADMIN */
+.admin-container {
+  padding: 30px;
+}
+
+.admin-summary {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.filters button {
+  margin-right: 10px;
+}
+
+/* TABLA */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #111;
+  color: #fff;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .cart-panel {
+    width: 100%;
+  }
+}

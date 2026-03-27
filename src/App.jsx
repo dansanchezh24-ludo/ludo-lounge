@@ -1,124 +1,328 @@
-// ===============================
-// LUDO - TIENDA CON CARRITO + CATEGORÍAS
-// READY FOR VERCEL 🚀
-// ===============================
-
-// ---------- src/App.jsx ----------
-import React, { useState } from "react";
-
-const catalog = {
-  "Niños": [
-    { name: "Detecteam: Un huevo de más", price: 500 },
-    { name: "El Rebaño", price: 600 },
-    { name: "Toma 6 Junior", price: 575 },
-    { name: "Worm Up", price: 700 },
-    { name: "Ouch!", price: 380 },
-    { name: "Caperucita Roja", price: 900 },
-    { name: "Galletas", price: 600 },
-    { name: "El juego de las profesiones", price: 500 }
-  ],
-
-  "Familiar": [
-    { name: "Sushi Express", price: 725 },
-    { name: "Grua de Peluches", price: 600 },
-    { name: "Cats Knocking Things Off Ledges", price: 600 },
-    { name: "Da Da Da", price: 420 },
-    { name: "Telestrations", price: 900 }
-  ],
-
-  "Adolescentes": [
-    { name: "Yummy Kitty", price: 500 },
-    { name: "Pingüinos", price: 1200 },
-    { name: "Taco Loco", price: 500 },
-    { name: "Yo Soy Tu Peli", price: 670 },
-    { name: "Break the Code", price: 540 },
-    { name: "Truth or Drink", price: 650 }
-  ],
-
-  "Adultos": [
-    { name: "Mesa para Dos", price: 670 },
-    { name: "Happy Chupe", price: 670 },
-    { name: "Exit: Sherlock Holmes", price: 550 },
-    { name: "Medical Mysteries Miami", price: 850 },
-    { name: "Medical Mysteries New York", price: 850 },
-    { name: "Marvel Dice Throne Deadpool", price: 800 },
-    { name: "Petals", price: 500 }
-  ],
-
-  "Agilidad Mental": [
-    { name: "IQ Circuit", price: 420 },
-    { name: "IQ Stars", price: 420 },
-    { name: "IQ Digits", price: 480 },
-    { name: "IQ XOXO", price: 420 },
-    { name: "Quadrillion", price: 750 }
-  ],
-
-  "Polys": [
-    { name: "Barbie", price: 850 },
-    { name: "Stitch", price: 750 },
-    { name: "Pokemon", price: 850 },
-    { name: "Señor de los Anillos", price: 970 },
-    { name: "Casa del Dragón", price: 900 },
-    { name: "Harry Potter", price: 920 },
-    { name: "Villanos Disney", price: 950 },
-    { name: "FIFA", price: 1250 }
-  ],
-
-  "Cartas": [
-    { name: "UNO Quatro", price: 700 },
-    { name: "UNO Stacko", price: 450 },
-    { name: "UNO Spin", price: 650 },
-    { name: "UNO Liar's", price: 650 },
-    { name: "UNO Golf", price: 630 },
-    { name: "UNO Dare!", price: 530 }
-  ]
-};
+import React, { useState, useEffect } from "react";
+import { products } from "./data/products";
+import Checkout from "./pages/Checkout";
+import Header from "./components/Header";
+import Admin from "./pages/Admin";
 
 export default function App() {
   const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
+        setIsCartOpen(false);
+        setShowCheckout(false);
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  if (isAdmin) return <Admin />;
+
+  const categories = ["Todos", ...new Set(products.map(p => p.category))];
+
+  const filteredProducts =
+    selectedCategory === "Todos"
+      ? products
+      : products.filter(p => p.category === selectedCategory);
 
   const addToCart = (product) => {
-    setCart([...cart, product]);
+    const exist = cart.find(i => i.id === product.id);
+    if (exist) {
+      setCart(cart.map(i =>
+        i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
+      ));
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
+    }
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const removeFromCart = (product) => {
+    const exist = cart.find(i => i.id === product.id);
+    if (exist.quantity === 1) {
+      setCart(cart.filter(i => i.id !== product.id));
+    } else {
+      setCart(cart.map(i =>
+        i.id === product.id ? { ...i, quantity: i.quantity - 1 } : i
+      ));
+    }
+  };
+
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1 style={{ textAlign: "center" }}>LUDO 🎲</h1>
-      <h3 style={{ textAlign: "center" }}>Catálogo de Juegos</h3>
-
-      {/* CART */}
-      <div style={{ position: "fixed", top: 20, right: 20, background: "white", padding: "15px", borderRadius: "10px", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }}>
-        <h4>🛒 Carrito</h4>
-        <p>{cart.length} productos</p>
-        <p>Total: ${total}</p>
+    <>
+      {/* ADMIN */}
+      <div style={styles.adminAccess}>
+        <button onClick={() => setIsAdmin(true)}>⚙️</button>
       </div>
 
-      {Object.entries(catalog).map(([category, items]) => (
-        <div key={category} style={{ marginTop: "30px" }}>
-          <h2>{category}</h2>
+      {/* BIENVENIDA */}
+      {showWelcome && (
+        <div style={styles.overlay}>
+          <div style={styles.modal}>
+            <img
+              src="/images/bienvenida.png"
+              alt="Bienvenida"
+              style={styles.modalImage}
+            />
+            <button
+              onClick={() => setShowWelcome(false)}
+              style={styles.modalBtn}
+            >
+              Entrar al catálogo
+            </button>
+          </div>
+        </div>
+      )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))", gap: "15px" }}>
-            {items.map((p, i) => (
-              <div key={i} style={{ background: "white", padding: "15px", borderRadius: "10px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
-                <h4>{p.name}</h4>
-                <p>${p.price}</p>
-                <button onClick={() => addToCart(p)} style={{ padding: "8px", background: "black", color: "white", borderRadius: "6px" }}>
+      <Header
+        cartCount={cart.length}
+        onCartClick={() => {
+          setIsCartOpen(!isCartOpen);
+          setShowCheckout(false);
+        }}
+      />
+
+      <div style={styles.layout}>
+        {/* SIDEBAR */}
+        <aside style={styles.sidebar}>
+          {categories.map((cat) => (
+            <div
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                ...styles.categoryItem,
+                background:
+                  selectedCategory === cat ? "#28a745" : "transparent",
+              }}
+            >
+              {cat}
+            </div>
+          ))}
+        </aside>
+
+        {/* PRODUCTOS */}
+        <main style={styles.main}>
+          <div style={styles.grid}>
+            {filteredProducts.map((product) => (
+              <div key={product.id} style={styles.card}>
+                <img src={product.image} style={styles.productImg} />
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <b>${product.price}</b>
+
+                <button onClick={() => addToCart(product)} style={styles.btn}>
                   Agregar
                 </button>
               </div>
             ))}
           </div>
+        </main>
+      </div>
+
+      {/* CARRITO */}
+      {isCartOpen && (
+			<div
+			  style={styles.cartOverlay}
+			  onClick={(e) => {
+				e.stopPropagation();
+				setIsCartOpen(false);
+			  }}
+			/>
+      )}
+
+      <div style={{ ...styles.cart, right: isCartOpen ? 0 : "-400px" }}>
+        <div style={styles.cartHeader}>
+          <h3>Carrito</h3>
+          <button onClick={() => setIsCartOpen(false)}>✖</button>
         </div>
-      ))}
-    </div>
+
+        <div style={styles.cartContent}>
+          {cart.map((item) => (
+            <div key={item.id} style={styles.cartItem}>
+              {item.name} x {item.quantity}
+              <div>
+                <button onClick={() => removeFromCart(item)}>-</button>
+                <button onClick={() => addToCart(item)}>+</button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={styles.cartFooter}>
+          <b>Total: ${total}</b>
+
+          <button
+            onClick={() => {
+              setIsCartOpen(false);
+              setShowCheckout(true);
+            }}
+            disabled={!cart.length}
+            style={styles.checkoutBtn}
+          >
+            Finalizar compra
+          </button>
+        </div>
+      </div>
+
+      {/* CHECKOUT */}
+		{showCheckout ? (
+		  <div style={{ position: "fixed", inset: 0, zIndex: 99999 }}>
+			<Checkout
+			  cart={cart}
+			  clearCart={() => setCart([])}
+			  onClose={() => setShowCheckout(false)}
+			/>
+		  </div>
+		) : null}
+    </>
   );
 }
 
-// ===============================
-// 🚀 DEPLOY
-// npm install
-// npm run dev
-// npx vercel
-// ===============================
+const styles = {
+  adminAccess: { position: "fixed", bottom: 10, right: 10, zIndex: 9999 },
+
+  overlay: {
+    position: "fixed",
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.85)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2000,
+    padding: "20px",
+	overflowY: "auto",
+  },
+
+  modal: {
+    background: "#fff",
+    padding: "15px",
+    borderRadius: "12px",
+    textAlign: "center",
+    maxWidth: "420px",
+    width: "100%",
+  },
+
+  modalImage: {
+    width: "100%",
+	height: "auto",
+    maxHeight: "75vh",
+    objectFit: "contain",
+	borderRadius: "10px",
+  },
+
+  modalBtn: {
+    marginTop: "10px",
+    padding: "14px",
+    width: "100%",
+    background: "#28a745",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    fontWeight: "bold",
+	fontSize: "16px",
+  position: "sticky",
+  bottom: "0",
+  },
+
+  layout: { display: "flex" },
+
+  sidebar: {
+    width: "220px",
+    background: "#111",
+    color: "#fff",
+    height: "100vh",
+    position: "sticky",
+    top: 0,
+    padding: "15px",
+  },
+
+  categoryItem: {
+    padding: "12px",
+    borderBottom: "1px solid #333",
+    cursor: "pointer",
+  },
+
+  main: { flex: 1, padding: "20px" },
+
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+    gap: "20px",
+  },
+
+  card: {
+    background: "#fff",
+    padding: "15px",
+    borderRadius: "10px",
+  },
+
+  productImg: {
+    width: "100%",
+    height: "150px",
+    objectFit: "cover",
+  },
+
+  btn: {
+    marginTop: "10px",
+    background: "#28a745",
+    color: "#fff",
+    padding: "10px",
+    border: "none",
+    borderRadius: "5px",
+  },
+
+  cart: {
+    position: "fixed",
+    top: 0,
+    width: "350px",
+    height: "100%",
+    background: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    zIndex: 1000,
+  },
+
+  cartHeader: {
+    padding: "10px",
+    borderBottom: "1px solid #ddd",
+    display: "flex",
+    justifyContent: "space-between",
+  },
+
+  cartContent: { flex: 1, overflowY: "auto" },
+
+  cartItem: {
+    padding: "10px",
+    borderBottom: "1px solid #eee",
+  },
+
+  cartFooter: {
+    padding: "10px",
+    borderTop: "1px solid #ddd",
+  },
+
+  checkoutBtn: {
+    width: "100%",
+    marginTop: "10px",
+    padding: "12px",
+    background: "#007bff",
+    color: "#fff",
+    border: "none",
+  },
+
+  cartOverlay: {
+    position: "fixed",
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.5)",
+  },
+};
