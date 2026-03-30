@@ -32,16 +32,16 @@ export const products = [
   { id: 28, name: "MANDALORIAN ADVENTURES", price: 1575, image: "/images/mando.jpeg", description: "Explora la galaxia en misiones épicas.", category: "Adolescentes", weight: 2.5, length: 38, width: 28, height: 12 },
 
   // ADULTOS
-  { id: 29, name: "NI SI NI NO", price: 360, image: "/images/nisini.jpeg", description: "Evita decir sí o no mientras respondes preguntas.", category: "Adultos", weight: 1.0, length: 20, width: 15, height: 5 },
+  { id: 29, name: "NI SI NI NO", price: 360, image: "/images/nisinino.jpeg", description: "Evita decir sí o no mientras respondes preguntas.", category: "Adultos", weight: 1.0, length: 20, width: 15, height: 5 },
   { id: 30, name: "TABOO", price: 525, image: "/images/taboo.jpeg", description: "Haz que adivinen palabras sin usar las prohibidas.", category: "Adultos", weight: 1.5, length: 30, width: 22, height: 8 },
-  { id: 31, name: "RISK OR DRINK", price: 520, image: "/images/risk.jpeg", description: "Acepta retos o bebe, tú decides.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
-  { id: 32, name: "MESA PARA DOS", price: 680, image: "/images/mesa.jpeg", description: "Juego diseñado para parejas con retos y preguntas.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
+  { id: 31, name: "RISK OR DRINK", price: 520, image: "/images/riskordrink.jpeg", description: "Acepta retos o bebe, tú decides.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
+  { id: 32, name: "MESA PARA DOS", price: 680, image: "/images/mesaparados.jpeg", description: "Juego diseñado para parejas con retos y preguntas.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
   { id: 33, name: "HEDBANZ ADULTING", price: 600, image: "/images/hedbanz.jpeg", description: "Adivina lo que eres en versión adulta.", category: "Adultos", weight: 1.2, length: 25, width: 20, height: 8 },
   { id: 34, name: "EXIT LOTR", price: 650, image: "/images/exit_lotr.jpeg", description: "Resuelve acertijos en la Tierra Media.", category: "Adultos", weight: 1.8, length: 28, width: 20, height: 8 },
   { id: 35, name: "EXIT SHERLOCK", price: 650, image: "/images/exit_sherlock.jpeg", description: "Investiga un caso al estilo Sherlock Holmes.", category: "Adultos", weight: 1.8, length: 28, width: 20, height: 8 },
   { id: 36, name: "HAPPY CHUPE", price: 650, image: "/images/chupe.jpeg", description: "Juego de fiesta con cartas y retos.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
   { id: 37, name: "MINDMADE", price: 980, image: "/images/mindmade.jpeg", description: "Debates y creatividad al límite.", category: "Adultos", weight: 1.5, length: 30, width: 22, height: 10 },
-  { id: 38, name: "TRUTH OR DRINK", price: 840, image: "/images/truth.jpeg", description: "Verdad o shot en este juego revelador.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
+  { id: 38, name: "TRUTH OR DRINK", price: 840, image: "/images/truthordrink.jpeg", description: "Verdad o shot en este juego revelador.", category: "Adultos", weight: 1.5, length: 25, width: 20, height: 8 },
 
   // AGILIDAD 
   { id: 39, name: "IQ CIRCUIT", price: 580, image: "/images/iq_circuit.jpeg", description: "Resuelve circuitos lógicos en distintos niveles.", category: "Agilidad Mental", weight: 1.0, length: 20, width: 15, height: 5 },
