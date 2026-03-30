@@ -55,24 +55,24 @@ export const products = [
   { id: 47, name: "IQ QUUB", price: 600, image: "/images/quub.jpeg", description: "Desafío de lógica en cubo.", category: "Agilidad Mental", weight: 1.0, length: 20, width: 15, height: 5 },
   { id: 48, name: "IQ BUBBLES", price: 600, image: "/images/bubbles.jpeg", description: "Organiza burbujas correctamente.", category: "Agilidad Mental", weight: 1.0, length: 20, width: 15, height: 5 },
   { id: 49, name: "MILIMEMORY", price: 670, image: "/images/milimemory.jpeg", description: "Ejercita tu memoria visual.", category: "Agilidad Mental", weight: 1.0, length: 22, width: 18, height: 6 },
-  { id: 50, name: "COLOUR CODE", price: 845, image: "/images/colour.jpeg", description: "Combina colores para resolver retos.", category: "Agilidad Mental", weight: 1.0, length: 22, width: 18, height: 6 },
-  { id: 51, name: "ESTIMULACIÓN COGNITIVA", price: 860, image: "/images/estim.jpeg", description: "Ejercicios diseñados para activar el cerebro.", category: "Agilidad Mental", weight: 1.0, length: 25, width: 20, height: 6 },
+  { id: 50, name: "COLOUR CODE", price: 845, image: "/images/colourcode.jpeg", description: "Combina colores para resolver retos.", category: "Agilidad Mental", weight: 1.0, length: 22, width: 18, height: 6 },
+  { id: 51, name: "ESTIMULACIÓN COGNITIVA", price: 860, image: "/images/estimulacioncognitiva.jpeg", description: "Ejercicios diseñados para activar el cerebro.", category: "Agilidad Mental", weight: 1.0, length: 25, width: 20, height: 6 },
 
   // CASINO
-  { id: 52, name: "CASINO POKER", price: 500, image: "/images/poker.jpeg", description: "Set completo para partidas de póker.", category: "Casino", weight: 1.5, length: 30, width: 22, height: 8 },
+  { id: 52, name: "CASINO POKER", price: 500, image: "/images/casinopoker.jpeg", description: "Set completo para partidas de póker.", category: "Casino", weight: 1.5, length: 30, width: 22, height: 8 },
   { id: 53, name: "CASINO MONTECARLO", price: 3200, image: "/images/montecarlo.jpeg", description: "Maletín premium con fichas profesionales.", category: "Casino", weight: 3.5, length: 45, width: 30, height: 12 },
   { id: 54, name: "CASINO VENECIA", price: 4200, image: "/images/venecia.jpeg", description: "Set de casino de lujo con fichas pesadas.", category: "Casino", weight: 4.0, length: 48, width: 32, height: 12 },
 
   // CATAN 
-  { id: 55, name: "CATAN HUMANIDAD", price: 1600, image: "/images/catan1.jpeg", description: "Expansión temática de evolución humana.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
-  { id: 56, name: "CATAN CLÁSICO", price: 1300, image: "/images/catan2.jpeg", description: "El clásico juego de comercio y estrategia.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
+  { id: 55, name: "CATAN HUMANIDAD", price: 1600, image: "/images/catan_humanidad.jpeg", description: "Expansión temática de evolución humana.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
+  { id: 56, name: "CATAN CLÁSICO", price: 1300, image: "/images/catan_clasico.jpeg", description: "El clásico juego de comercio y estrategia.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 57, name: "CATAN ENERGÍAS", price: 1800, image: "/images/catan3.jpeg", description: "Versión moderna con recursos energéticos.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 58, name: "CATAN CIUDADES", price: 1200, image: "/images/catan4.jpeg", description: "Expansión que añade desarrollo urbano.", category: "Catan", weight: 2.2, length: 30, width: 30, height: 10 },
-  { id: 59, name: "CATAN VIAJE", price: 1350, image: "/images/catan5.jpeg", description: "Versión portátil del clásico Catan.", category: "Catan", weight: 1.8, length: 25, width: 20, height: 8 },
+  { id: 59, name: "CATAN VIAJE", price: 1350, image: "/images/catan_viaje.jpeg", description: "Versión portátil del clásico Catan.", category: "Catan", weight: 1.8, length: 25, width: 20, height: 8 },
   { id: 60, name: "CATAN PIRATAS", price: 1400, image: "/images/catan6.jpeg", description: "Explora mares y enfrenta piratas.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
-  { id: 61, name: "CATAN DOBBLE", price: 630, image: "/images/catan7.jpeg", description: "Versión rápida de reflejos estilo Dobble.", category: "Catan", weight: 1.0, length: 20, width: 15, height: 5 },
+  { id: 61, name: "CATAN DOBBLE", price: 630, image: "/images/catan_dobble.jpeg", description: "Versión rápida de reflejos estilo Dobble.", category: "Catan", weight: 1.0, length: 20, width: 15, height: 5 },
   { id: 62, name: "CATAN INCAS", price: 1500, image: "/images/catan8.jpeg", description: "Ambientado en civilizaciones antiguas.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
-  { id: 63, name: "CATAN JUNIOR", price: 875, image: "/images/catan9.jpeg", description: "Versión simplificada para niños.", category: "Catan", weight: 2.0, length: 28, width: 28, height: 8 },
+  { id: 63, name: "CATAN JUNIOR", price: 875, image: "/images/catan_jr.jpeg", description: "Versión simplificada para niños.", category: "Catan", weight: 2.0, length: 28, width: 28, height: 8 },
 
   // CLÁSICOS
   { id: 64, name: "RUMMY PALABRAS", price: 500, image: "/images/rummy1.jpeg", description: "Forma palabras con fichas estilo Rummy.", category: "Clásicos", weight: 1.5, length: 30, width: 22, height: 8 },
