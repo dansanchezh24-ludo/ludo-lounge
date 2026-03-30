@@ -15,8 +15,9 @@ export const products = [
   { id: 13, name: "GOOD PUPPERS TOO", price: 570, image: "/images/good_puppers.jpeg", description: "Juego rápido para formar la mejor manada de perros.", category: "Niños", weight: 1.0, length: 25, width: 20, height: 6 },
   { id: 14, name: "GRÚA DE PELUCHES", price: 750, image: "/images/grua_peluches.jpeg", description: "Simula una máquina de feria atrapando peluches.", category: "Niños", weight: 1.5, length: 30, width: 25, height: 10 },
   { id: 15, name: "MARRAMIAU", price: 650, image: "/images/marramiau.jpeg", description: "Juego caótico de gatos donde todo puede pasar.", category: "Niños", weight: 1.0, length: 25, width: 20, height: 6 },
-
-  // ADOLESCENTES
+ { id: 66, name: "RUMMY DISNEY", price: 315, image: "/images/rummy3.jpeg", description: "Versión temática de Disney.", category: "Niños", weight: 1.2, length: 28, width: 20, height: 6 },
+ 
+ // ADOLESCENTES
   { id: 16, name: "YO SOY TU PELI", price: 670, image: "/images/yo_soy_tu_peli.jpeg", description: "Actúa escenas y reta a tus amigos a adivinar.", category: "Adolescentes", weight: 1.3, length: 28, width: 20, height: 8 },
   { id: 17, name: "BREAK THE CODE", price: 640, image: "/images/brake_the_code.jpeg", description: "Descifra códigos antes que los demás.", category: "Adolescentes", weight: 1.2, length: 25, width: 20, height: 8 },
   { id: 18, name: "YUMMY KITTEN", price: 680, image: "/images/yummy_kitty.jpeg", description: "Juego adorable donde alimentas a tus gatitos.", category: "Adolescentes", weight: 1.0, length: 22, width: 15, height: 5 },
@@ -62,8 +63,10 @@ export const products = [
   { id: 52, name: "CASINO POKER", price: 500, image: "/images/casinopoker.jpeg", description: "Set completo para partidas de póker.", category: "Casino", weight: 1.5, length: 30, width: 22, height: 8 },
   { id: 53, name: "CASINO MONTECARLO", price: 3200, image: "/images/montecarlo.jpeg", description: "Maletín premium con fichas profesionales.", category: "Casino", weight: 3.5, length: 45, width: 30, height: 12 },
   { id: 54, name: "CASINO VENECIA", price: 4200, image: "/images/venecia.jpeg", description: "Set de casino de lujo con fichas pesadas.", category: "Casino", weight: 4.0, length: 48, width: 32, height: 12 },
-
-  // CATAN 
+  { id: 68, name: "CUBILETE", price: 790, image: "/images/cubilete.jpeg", description: "Juego clásico de dados con cubilete.", category: "Casino", weight: 1.5, length: 25, width: 20, height: 8 },
+  { id: 69, name: "BACKGAMMON", price: 3000, image: "/images/backgammon.jpeg", description: "Juego de estrategia milenario.", category: "Casino", weight: 3.0, length: 45, width: 30, height: 8 },
+ 
+ // CATAN 
   { id: 55, name: "CATAN HUMANIDAD", price: 1600, image: "/images/catan_humanidad.jpeg", description: "Expansión temática de evolución humana.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 56, name: "CATAN CLÁSICO", price: 1300, image: "/images/catan_clasico.jpeg", description: "El clásico juego de comercio y estrategia.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 57, name: "CATAN ENERGÍAS", price: 1800, image: "/images/catan3.jpeg", description: "Versión moderna con recursos energéticos.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
@@ -74,13 +77,6 @@ export const products = [
   { id: 62, name: "CATAN INCAS", price: 1500, image: "/images/catan8.jpeg", description: "Ambientado en civilizaciones antiguas.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 63, name: "CATAN JUNIOR", price: 875, image: "/images/catan_jr.jpeg", description: "Versión simplificada para niños.", category: "Catan", weight: 2.0, length: 28, width: 28, height: 8 },
 
-  // CLÁSICOS
-  { id: 64, name: "RUMMY PALABRAS", price: 500, image: "/images/rummy1.jpeg", description: "Forma palabras con fichas estilo Rummy.", category: "Clásicos", weight: 1.5, length: 30, width: 22, height: 8 },
-  { id: 65, name: "RUMMY CLÁSICO", price: 310, image: "/images/rummy2.jpeg", description: "Juego tradicional de secuencias numéricas.", category: "Clásicos", weight: 1.2, length: 28, width: 20, height: 6 },
-  { id: 66, name: "RUMMY DISNEY", price: 315, image: "/images/rummy3.jpeg", description: "Versión temática de Disney.", category: "Clásicos", weight: 1.2, length: 28, width: 20, height: 6 },
-  { id: 67, name: "RUMMY 6", price: 860, image: "/images/rummy4.jpeg", description: "Versión avanzada con más combinaciones.", category: "Clásicos", weight: 1.8, length: 30, width: 22, height: 8 },
-  { id: 68, name: "CUBILETE", price: 790, image: "/images/cubilete.jpeg", description: "Juego clásico de dados con cubilete.", category: "Clásicos", weight: 1.5, length: 25, width: 20, height: 8 },
-  { id: 69, name: "BACKGAMMON", price: 3000, image: "/images/backgammon.jpeg", description: "Juego de estrategia milenario.", category: "Clásicos", weight: 3.0, length: 45, width: 30, height: 8 },
 
   // FAMILIAR 
   { id: 70, name: "JET LAG", price: 480, image: "/images/jetlag.jpeg", description: "Viaja por el mundo resolviendo retos.", category: "Familiar", weight: 1.0, length: 22, width: 15, height: 5 },
@@ -96,6 +92,9 @@ export const products = [
   { id: 80, name: "CHISPAS", price: 750, image: "/images/chispas.jpeg", description: "Juego rápido de energía y reflejos.", category: "Familiar", weight: 1.3, length: 25, width: 20, height: 6 },
   { id: 81, name: "TELESTRATIONS", price: 975, image: "/images/telestrations.jpeg", description: "Dibuja y adivina en cadena.", category: "Familiar", weight: 1.8, length: 30, width: 22, height: 8 },
   { id: 82, name: "PITCHCAR", price: 2725, image: "/images/pitchcar.jpeg", description: "Carreras con discos de madera.", category: "Familiar", weight: 3.5, length: 50, width: 40, height: 10 },
+  { id: 64, name: "RUMMY PALABRAS", price: 500, image: "/images/rummy1.jpeg", description: "Forma palabras con fichas estilo Rummy.", category: "Familiar", weight: 1.5, length: 30, width: 22, height: 8 },
+  { id: 65, name: "RUMMY CLÁSICO", price: 310, image: "/images/rummy2.jpeg", description: "Juego tradicional de secuencias numéricas.", category: "Familiar", weight: 1.2, length: 28, width: 20, height: 6 },
+  { id: 67, name: "RUMMY 6", price: 860, image: "/images/rummy4.jpeg", description: "Versión avanzada con más combinaciones.", category: "Familiar", weight: 1.8, length: 30, width: 22, height: 8 },
 
   // MONOPOLY 
   { id: 83, name: "MONOPOLY DRAGÓN", price: 1200, image: "/images/mono1.jpeg", description: "Edición temática de fantasía.", category: "Polys", weight: 2.0, length: 30, width: 30, height: 10 },
