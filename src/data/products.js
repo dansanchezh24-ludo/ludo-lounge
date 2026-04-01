@@ -79,7 +79,7 @@ export const products = [
   { id: 65, name: "CATAN DE VIAJE", price: 1350, image: "/images/catandeviaje.jpeg", description: "Un Catan que cabe en tu mochila… y donde las ovejas viajan contigo en tren, avión o carretera.", category: "Catan", weight: 1.8, length: 25, width: 20, height: 8 },
   { id: 66, name: "CATAN PIRATAS Y EXPLORADORES", price: 1400, image: "/images/catanpiratas.jpeg", description: "Un Catan donde tus colonos se convierten en marineros… y tus caballeros descubren que los piratas no aceptan ovejas como soborno.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 67, name: "CATAN DOBBLE", price: 630, image: "/images/catandobble.jpeg", description: "El clásico Catan se mezcla con la velocidad de Dobble: observa, encuentra y conquista antes que los demás..", category: "Catan", weight: 1.0, length: 20, width: 15, height: 5 },
-  { id: 68, name: "CATAN EL AUGE DE LOS INCAS", price: 1500, image: "/images/cataincas.jpeg", description: "Ambientada en los Andes, donde las tribus incas prosperan, construyen y compiten por recursos.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
+  { id: 68, name: "CATAN EL AUGE DE LOS INCAS", price: 1500, image: "/images/catanincas.jpeg", description: "Ambientada en los Andes, donde las tribus incas prosperan, construyen y compiten por recursos.", category: "Catan", weight: 2.5, length: 30, width: 30, height: 10 },
   { id: 69, name: "CATAN JUNIOR", price: 875, image: "/images/catanjr.jpeg", description: "Los pequeños colonos levantan sus barcos y conquistan islas llenas de tesoros. Catan Junior es la aventura perfecta para iniciarse en el mundo de Catan.", category: "Catan", weight: 2.0, length: 28, width: 28, height: 8 },
 
 
