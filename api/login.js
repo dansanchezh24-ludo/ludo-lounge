@@ -10,12 +10,7 @@ export default async function handler(req, res) {
 
   const { user, pass } = req.body;
   
-  // LOG TEMPORAL
-  console.log("Recibido:", { user, pass });
-  console.log("Esperado:", { 
-    user: process.env.ADMIN_USER, 
-    pass: process.env.ADMIN_PASS 
-  });
+
 
   if (
     user !== process.env.ADMIN_USER ||
