@@ -62,7 +62,7 @@ export default function Checkout({ cart, clearCart, onClose }) {
     try {
       setLoading(true);
 
-      const res = await axios.post("http://localhost:5000/api/orders", {
+      const res = await axios.post("/api/orders", {
         ...form,
         phone: "52" + form.phone,
         paymentMethod: method,
@@ -185,9 +185,9 @@ export default function Checkout({ cart, clearCart, onClose }) {
             {form.paymentMethod === "transferencia" && (
               <>
                 <div style={styles.transferBox}>
-                  <p><b>BBVA</b></p>
-                  <p>Cuenta: 1234567890</p>
-                  <p>CLABE: 012345678901234567</p>
+                  <p><b>Mercado Pago W</b></p>
+                  <p>BENEFICIARIO: Laura Sofia Rodriguez Quintana</p>
+                  <p>CLABE: 722969015506648176</p>
                 </div>
 
                 <button
