@@ -32,7 +32,20 @@ const sendStatusEmail = async (order) => {
   try {
     let subject = "";
     let html = "";
-    if (order.status === "pagado") {
+
+    if (order.status === "pendiente") {
+      subject = "Pedido recibido";
+      html = `
+        <h2>¡Recibimos tu pedido!</h2>
+        <p>Folio: ${order.id}</p>
+        <p>Total: $${order.total}</p>
+        <p>Por favor realiza tu transferencia a:</p>
+        <p><b>BANCO:</b> Mercado Pago W</p>
+        <p><b>CLABE:</b> 722969015506648176</p>
+        <p><b>BENEFICIARIO:</b> Laura Sofia Rodriguez Quintana</p>
+        <p>Una vez confirmado el pago actualizaremos tu pedido.</p>
+      `;
+    } else if (order.status === "pagado") {
       subject = "Pago confirmado";
       html = `<h2>Pago recibido</h2><p>Folio: ${order.id}</p>`;
     } else if (order.status === "enviado") {
@@ -44,10 +57,11 @@ const sendStatusEmail = async (order) => {
     } else {
       return;
     }
+
     await resend.emails.send({
       from: "Ludo Lounge <noreply@ludo-lounge.com>",
       to: order.email,
-	  cc: "ludolounge01@gmail.com", // ← tu correo de la tienda
+      cc: "ludolounge01@gmail.com",
       subject,
       html,
     });
@@ -65,6 +79,10 @@ export default async function handler(req, res) {
         .select()
         .single();
       if (error) throw error;
+
+      // Enviar correo al crear el pedido
+      sendStatusEmail(data);
+
       return res.status(201).json({ success: true, orderId: data.id });
     }
 
