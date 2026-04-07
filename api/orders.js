@@ -45,8 +45,9 @@ const sendStatusEmail = async (order) => {
       return;
     }
     await resend.emails.send({
-      from: "Ludo Lounge <onboarding@resend.dev>",
+      from: "Ludo Lounge <noreply@ludo-lounge.com>",
       to: order.email,
+	  cc: "ludolounge01@gmail.com", // ← tu correo de la tienda
       subject,
       html,
     });
