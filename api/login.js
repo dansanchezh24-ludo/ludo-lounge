@@ -11,8 +11,8 @@ export default async function handler(req, res) {
   const { user, pass } = req.body;
 
   if (
-    user !== process.env.VITE_ADMIN_USER ||
-    pass !== process.env.VITE_ADMIN_PASS
+    user !== process.env.ADMIN_USER ||
+    pass !== process.env.ADMIN_PASS
   ) {
     return res.status(401).json({ error: "Credenciales incorrectas" });
   }
