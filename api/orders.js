@@ -1,6 +1,7 @@
 // api/orders.js
 import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -9,6 +10,19 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
+
+// Verificar token JWT — solo para GET y PUT (admin)
+const verifyAdmin = (req) => {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith("Bearer ")) return false;
+  try {
+    const token = auth.split(" ")[1];
+    jwt.verify(token, process.env.JWT_SECRET);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 // Convierte camelCase del frontend a snake_case de Supabase
 const mapOrder = (body) => ({
@@ -72,6 +86,7 @@ const sendStatusEmail = async (order) => {
 
 export default async function handler(req, res) {
   try {
+    // POST — crear pedido (público, no requiere token)
     if (req.method === "POST") {
       const { data, error } = await supabase
         .from("orders")
@@ -80,12 +95,18 @@ export default async function handler(req, res) {
         .single();
       if (error) throw error;
 
-      // Enviar correo al crear el pedido
       await sendStatusEmail(data);
-
       return res.status(201).json({ success: true, orderId: data.id });
     }
 
+    // GET y PUT — solo admin con token válido
+    if (req.method === "GET" || req.method === "PUT") {
+      if (!verifyAdmin(req)) {
+        return res.status(401).json({ error: "No autorizado" });
+      }
+    }
+
+    // GET — obtener todos los pedidos
     if (req.method === "GET") {
       const { data, error } = await supabase
         .from("orders")
@@ -95,6 +116,7 @@ export default async function handler(req, res) {
       return res.status(200).json(data);
     }
 
+    // PUT — actualizar estatus
     if (req.method === "PUT") {
       const id = req.query.id;
       const { data: order, error: fetchError } = await supabase

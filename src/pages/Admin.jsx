@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ADMIN_USER = import.meta.env.VITE_ADMIN_USER;
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS;
-
 export default function Admin() {
   const [authed, setAuthed] = useState(false);
   const [userInput, setUserInput] = useState("");
@@ -11,21 +8,32 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("todos");
 
-  // LOGIN
-  const handleLogin = () => {
-    if (userInput === ADMIN_USER && passwordInput === ADMIN_PASS) {
+  // Obtener token guardado
+  const getToken = () => sessionStorage.getItem("admin_token");
+
+  // Headers con token para peticiones protegidas
+  const authHeaders = () => ({
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+
+  // LOGIN — llama al backend
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post("/api/login", {
+        user: userInput,
+        pass: passwordInput,
+      });
+      sessionStorage.setItem("admin_token", res.data.token);
       setAuthed(true);
-      sessionStorage.setItem("admin_auth", "true");
-    } else {
+    } catch {
       alert("Usuario o contraseña incorrectos");
     }
   };
 
-  // Verificar si ya estaba logueado en esta sesión
+  // Verificar si ya hay token válido al cargar
   useEffect(() => {
-    if (sessionStorage.getItem("admin_auth") === "true") {
-      setAuthed(true);
-    }
+    const token = getToken();
+    if (token) setAuthed(true);
   }, []);
 
   useEffect(() => {
@@ -34,17 +42,21 @@ export default function Admin() {
 
   const loadOrders = async () => {
     try {
-      const res = await axios.get("/api/orders");
+      const res = await axios.get("/api/orders", authHeaders());
       setOrders(res.data);
     } catch (err) {
-      console.error("Error cargando pedidos:", err);
-      alert("Error cargando pedidos");
+      if (err.response?.status === 401) {
+        sessionStorage.removeItem("admin_token");
+        setAuthed(false);
+      } else {
+        alert("Error cargando pedidos");
+      }
     }
   };
 
   const updateStatus = async (id, status, guide = null) => {
     try {
-      await axios.put(`/api/orders?id=${id}`, { status, guide });
+      await axios.put(`/api/orders?id=${id}`, { status, guide }, authHeaders());
       alert(`Pedido actualizado a ${status}`);
       loadOrders();
     } catch (err) {
@@ -54,11 +66,16 @@ export default function Admin() {
 
   const updateGuide = async (id, guide) => {
     try {
-      await axios.put(`/api/orders?id=${id}`, { guide });
+      await axios.put(`/api/orders?id=${id}`, { guide }, authHeaders());
       loadOrders();
     } catch (err) {
       alert(err.response?.data?.error || "Error al guardar guía");
     }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin_token");
+    setAuthed(false);
   };
 
   const getNextSteps = (order) => {
@@ -116,7 +133,7 @@ export default function Admin() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1>Panel Admin</h1>
         <button
-          onClick={() => { sessionStorage.removeItem("admin_auth"); setAuthed(false); }}
+          onClick={handleLogout}
           style={{ ...styles.btn, background: "#dc3545", width: "auto", padding: "8px 16px" }}
         >
           Cerrar sesión
