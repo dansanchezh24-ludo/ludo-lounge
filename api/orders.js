@@ -81,7 +81,7 @@ export default async function handler(req, res) {
       if (error) throw error;
 
       // Enviar correo al crear el pedido
-      sendStatusEmail(data);
+      await sendStatusEmail(data);
 
       return res.status(201).json({ success: true, orderId: data.id });
     }
