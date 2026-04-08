@@ -90,18 +90,14 @@ export default function App() {
         }}
       />
 
-      <div style={styles.layout}>
-        {/* SIDEBAR */}
-        <aside style={styles.sidebar}>
+      <div className="app-layout">
+        {/* SIDEBAR / CATEGORÍAS */}
+        <aside className="sidebar">
           {categories.map((cat) => (
             <div
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              style={{
-                ...styles.categoryItem,
-                background:
-                  selectedCategory === cat ? "#28a745" : "transparent",
-              }}
+              className={`category-chip${selectedCategory === cat ? " active" : ""}`}
             >
               {cat}
             </div>
@@ -109,33 +105,43 @@ export default function App() {
         </aside>
 
         {/* PRODUCTOS */}
-        <main style={styles.main}>
-          <div style={styles.grid}>
+        <main className="products-area">
+          <div className="product-grid">
             {filteredProducts.map((product) => (
-              <div key={product.id} style={styles.card}>
-                <img src={product.image} style={styles.productImg} />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <b>${product.price}</b>
-
-                <button onClick={() => addToCart(product)} style={styles.btn}>
-                  Agregar
-                </button>
+              <div key={product.id} className="product-card">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="product-img"
+                />
+                <div className="product-card-body">
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <div className="product-footer">
+                    <span className="price">${product.price}</span>
+                    <button
+                      className="btn-add"
+                      onClick={() => addToCart(product)}
+                    >
+                      Agregar
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </main>
       </div>
 
-      {/* CARRITO */}
+      {/* CARRITO OVERLAY */}
       {isCartOpen && (
-			<div
-			  style={styles.cartOverlay}
-			  onClick={(e) => {
-				e.stopPropagation();
-				setIsCartOpen(false);
-			  }}
-			/>
+        <div
+          style={styles.cartOverlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsCartOpen(false);
+          }}
+        />
       )}
 
       <div style={{ ...styles.cart, right: isCartOpen ? 0 : "-400px" }}>
@@ -173,15 +179,15 @@ export default function App() {
       </div>
 
       {/* CHECKOUT */}
-		{showCheckout ? (
-		  <div style={{ position: "fixed", inset: 0, zIndex: 99999 }}>
-			<Checkout
-			  cart={cart}
-			  clearCart={() => setCart([])}
-			  onClose={() => setShowCheckout(false)}
-			/>
-		  </div>
-		) : null}
+      {showCheckout ? (
+        <div style={{ position: "fixed", inset: 0, zIndex: 99999 }}>
+          <Checkout
+            cart={cart}
+            clearCart={() => setCart([])}
+            onClose={() => setShowCheckout(false)}
+          />
+        </div>
+      ) : null}
     </>
   );
 }
@@ -199,7 +205,7 @@ const styles = {
     alignItems: "center",
     zIndex: 2000,
     padding: "20px",
-	overflowY: "auto",
+    overflowY: "auto",
   },
 
   modal: {
@@ -213,10 +219,10 @@ const styles = {
 
   modalImage: {
     width: "100%",
-	height: "auto",
+    height: "auto",
     maxHeight: "75vh",
     objectFit: "contain",
-	borderRadius: "10px",
+    borderRadius: "10px",
   },
 
   modalBtn: {
@@ -228,56 +234,9 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     fontWeight: "bold",
-	fontSize: "16px",
-  position: "sticky",
-  bottom: "0",
-  },
-
-  layout: { display: "flex" },
-
-  sidebar: {
-    width: "220px",
-    background: "#111",
-    color: "#fff",
-    height: "100vh",
+    fontSize: "16px",
     position: "sticky",
-    top: 0,
-    padding: "15px",
-  },
-
-  categoryItem: {
-    padding: "12px",
-    borderBottom: "1px solid #333",
-    cursor: "pointer",
-  },
-
-  main: { flex: 1, padding: "20px" },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-    gap: "20px",
-  },
-
-  card: {
-    background: "#fff",
-    padding: "15px",
-    borderRadius: "10px",
-  },
-
-  productImg: {
-    width: "100%",
-    height: "150px",
-    objectFit: "cover",
-  },
-
-  btn: {
-    marginTop: "10px",
-    background: "#28a745",
-    color: "#fff",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
+    bottom: "0",
   },
 
   cart: {
@@ -288,41 +247,54 @@ const styles = {
     background: "#fff",
     display: "flex",
     flexDirection: "column",
-    zIndex: 1000,
+    zIndex: 1100,
+    transition: "right 0.3s ease",
+    boxShadow: "-5px 0 20px rgba(0,0,0,0.15)",
   },
 
   cartHeader: {
-    padding: "10px",
-    borderBottom: "1px solid #ddd",
+    padding: "15px 20px",
+    borderBottom: "1px solid #eee",
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
+    background: "#111",
+    color: "#fff",
   },
 
-  cartContent: { flex: 1, overflowY: "auto" },
+  cartContent: { flex: 1, overflowY: "auto", padding: "10px" },
 
   cartItem: {
-    padding: "10px",
-    borderBottom: "1px solid #eee",
+    padding: "12px 8px",
+    borderBottom: "1px solid #f0f0f0",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    fontSize: "14px",
   },
 
   cartFooter: {
-    padding: "10px",
-    borderTop: "1px solid #ddd",
+    padding: "15px 20px",
+    borderTop: "1px solid #eee",
+    background: "#fafafa",
   },
 
   checkoutBtn: {
     width: "100%",
     marginTop: "10px",
-    padding: "12px",
+    padding: "13px",
     background: "#007bff",
     color: "#fff",
     border: "none",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    fontSize: "15px",
   },
 
   cartOverlay: {
     position: "fixed",
-    width: "100%",
-    height: "100%",
-    background: "rgba(0,0,0,0.5)",
+    inset: 0,
+    background: "rgba(0,0,0,0.4)",
+    zIndex: 1050,
   },
 };

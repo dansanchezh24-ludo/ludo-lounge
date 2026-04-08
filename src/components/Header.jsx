@@ -2,53 +2,29 @@ import React from "react";
 
 const Header = ({ cartCount, onCartClick }) => {
   return (
-    <header style={styles.header}>
-      {/* LOGO / MARCA */}
-      <div style={styles.logo}>
-        🎲 Ludo Lounge
-      </div>
+    <header className="site-header">
+      {/* LOGO */}
+      <img
+        src="/images/nuevologoludolounge-encabezadopagina.jpeg"
+        alt="Ludo Lounge"
+        className="header-logo"
+      />
 
-      {/* ACCIONES */}
-      <div style={styles.actions}>
-        <button style={styles.cartBtn} onClick={onCartClick}>
-          🛒 Carrito ({cartCount})
-        </button>
-      </div>
+      {/* CARRITO */}
+      <button className="cart-btn" onClick={onCartClick}>
+        <span className="cart-icon-wrap">
+          <img
+            src="/images/logocarritodecompras.jpeg"
+            alt="Carrito"
+            className="cart-img"
+          />
+          {cartCount > 0 && (
+            <span className="cart-badge">{cartCount}</span>
+          )}
+        </span>
+      </button>
     </header>
   );
-};
-
-const styles = {
-  header: {
-    position: "sticky",
-    top: 0,
-    background: "#111",
-    color: "#fff",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "15px 25px",
-    zIndex: 1000,
-    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-  },
-  logo: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    letterSpacing: "1px",
-  },
-  actions: {
-    display: "flex",
-    gap: "10px",
-  },
-  cartBtn: {
-    background: "#28a745",
-    border: "none",
-    padding: "10px 15px",
-    borderRadius: "5px",
-    color: "#fff",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
 };
 
 export default Header;
