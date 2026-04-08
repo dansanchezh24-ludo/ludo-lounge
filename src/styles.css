@@ -15,15 +15,17 @@ body {
    HEADER
    ===================== */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  background: #111;
+  background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 8px 80px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
 }
 
 .header-logo {
@@ -69,7 +71,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0 3px;
-  border: 2px solid #111;
+  border: 2px solid #fff;
   line-height: 1;
 }
 
@@ -78,7 +80,8 @@ body {
    ===================== */
 .app-layout {
   display: flex;
-  min-height: calc(100vh - 74px);
+  min-height: calc(100vh - 78px);
+  margin-top: 78px;
 }
 
 /* =====================
@@ -149,6 +152,7 @@ body {
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -180,14 +184,7 @@ body {
 }
 
 .product-card p {
-  font-size: 12px;
-  color: #888;
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  line-height: 1.4;
+  display: none;
 }
 
 .product-footer {
@@ -363,8 +360,10 @@ section {
 @media (max-width: 768px) {
   .site-header {
     padding: 6px 70px 6px 14px;
-    position: relative;
-    justify-content: center;
+  }
+
+  .app-layout {
+    margin-top: 62px;
   }
 
   .header-logo {
@@ -471,5 +470,21 @@ section {
 
   .cart-img {
     height: 46px;
+  }
+}
+
+/* =====================
+   MODAL PRODUCTO RESPONSIVE
+   ===================== */
+@media (max-width: 768px) {
+  .product-modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-height: 88vh !important;
   }
 }
