@@ -1,5 +1,6 @@
 export const products = [
   // NIÑOS
+  { id: 999, name: "PRODUCTO DE PRUEBA", price: 1, image: "/images/catrescue.jpeg", description: "Producto temporal para probar el flujo de envío. Puedes eliminarlo después.", category: "Niños", weight: 0.5, length: 20, width: 15, height: 5 },
   { id: 1, name: "EL REBAÑO", price: 680, image: "/images/el_rebano.jpeg", description: "Un grupo de ovejas inquietas se mueve sin rumbo… ¿podrás guiarlas antes de que se dispersen?", category: "Niños", weight: 1.5, length: 30, width: 20, height: 10 },
   { id: 2, name: "DETECTEAM: UN HUEVO DE MÁS", price: 680, image: "/images/detecteam.jpeg", description: "Un misterio divertido donde cada jugador debe descubrir al culpable del huevo extra.", category: "Niños", weight: 1.1, length: 25, width: 20, height: 7 },
   { id: 3, name: "TOMA 6 JUNIOR", price: 660, image: "/images/toma6_junior.jpeg", description: "Juego de cartas donde deberás evitar llevarte demasiadas penalizaciones.", category: "Niños", weight: 1.2, length: 25, width: 15, height: 5 },
