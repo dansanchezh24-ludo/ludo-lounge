@@ -22,14 +22,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 90px;
+  padding: 8px 80px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
 .header-logo {
-  width: 100%;
-  max-width: 420px;
-  height: auto;
+  height: 60px;
+  width: auto;
   object-fit: contain;
   display: block;
 }
@@ -363,15 +362,14 @@ section {
    ===================== */
 @media (max-width: 768px) {
   .site-header {
-    padding: 8px 70px 8px 14px;
+    padding: 6px 70px 6px 14px;
     position: relative;
     justify-content: center;
   }
 
   .header-logo {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
+    height: 48px;
+    width: auto;
   }
 
   .cart-btn {
@@ -467,7 +465,8 @@ section {
   }
 
   .header-logo {
-    max-width: 220px;
+    height: 40px;
+    width: auto;
   }
 
   .cart-img {
