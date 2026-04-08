@@ -92,8 +92,8 @@ body {
   background: #111;
   color: #fff;
   position: sticky;
-  top: 74px;
-  height: calc(100vh - 74px);
+  top: 78px;
+  height: calc(100vh - 78px);
   overflow-y: auto;
   flex-shrink: 0;
   padding: 10px 0;
@@ -364,6 +364,7 @@ section {
 
   .app-layout {
     margin-top: 62px;
+    flex-direction: column;
   }
 
   .header-logo {
@@ -377,11 +378,6 @@ section {
 
   .cart-img {
     height: 54px;
-  }
-
-  /* Sidebar → barra horizontal deslizable */
-  .app-layout {
-    flex-direction: column;
   }
 
   .sidebar {
