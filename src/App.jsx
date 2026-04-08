@@ -316,10 +316,12 @@ const styles = {
 
   productModalImg: {
     width: "100%",
-    height: "260px",
-    objectFit: "cover",
+    maxHeight: "300px",
+    objectFit: "contain",
     display: "block",
     flexShrink: 0,
+    background: "#f8f8f8",
+    padding: "10px",
   },
 
   productModalBody: {
