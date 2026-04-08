@@ -11,12 +11,14 @@ export default function App() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
         setIsCartOpen(false);
         setShowCheckout(false);
+        setSelectedProduct(null);
       }
     };
     window.addEventListener("keydown", handleEsc);
@@ -108,7 +110,11 @@ export default function App() {
         <main className="products-area">
           <div className="product-grid">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="product-card">
+              <div
+                key={product.id}
+                className="product-card"
+                onClick={() => setSelectedProduct(product)}
+              >
                 <img
                   src={product.image}
                   alt={product.name}
@@ -116,12 +122,11 @@ export default function App() {
                 />
                 <div className="product-card-body">
                   <h3>{product.name}</h3>
-                  <p>{product.description}</p>
                   <div className="product-footer">
                     <span className="price">${product.price}</span>
                     <button
                       className="btn-add"
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => { e.stopPropagation(); addToCart(product); }}
                     >
                       Agregar
                     </button>
@@ -132,6 +137,45 @@ export default function App() {
           </div>
         </main>
       </div>
+
+      {/* MODAL DETALLE PRODUCTO */}
+      {selectedProduct && (
+        <div
+          style={styles.overlay}
+          onClick={() => setSelectedProduct(null)}
+        >
+          <div
+            style={styles.productModal}
+            className="product-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              style={styles.closeBtn}
+              onClick={() => setSelectedProduct(null)}
+            >
+              ✕
+            </button>
+            <img
+              src={selectedProduct.image}
+              alt={selectedProduct.name}
+              style={styles.productModalImg}
+            />
+            <div style={styles.productModalBody}>
+              <h2 style={styles.productModalName}>{selectedProduct.name}</h2>
+              <p style={styles.productModalDesc}>{selectedProduct.description}</p>
+              <div style={styles.productModalFooter}>
+                <span style={styles.productModalPrice}>${selectedProduct.price}</span>
+                <button
+                  style={styles.productModalBtn}
+                  onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
+                >
+                  Agregar al carrito
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CARRITO OVERLAY */}
       {isCartOpen && (
@@ -197,9 +241,8 @@ const styles = {
 
   overlay: {
     position: "fixed",
-    width: "100%",
-    height: "100%",
-    background: "rgba(0,0,0,0.85)",
+    inset: 0,
+    background: "rgba(0,0,0,0.75)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -237,6 +280,92 @@ const styles = {
     fontSize: "16px",
     position: "sticky",
     bottom: "0",
+  },
+
+  // MODAL PRODUCTO
+  productModal: {
+    background: "#fff",
+    borderRadius: "16px",
+    maxWidth: "500px",
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    maxHeight: "90vh",
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  closeBtn: {
+    position: "absolute",
+    top: "12px",
+    right: "12px",
+    background: "rgba(0,0,0,0.55)",
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: "32px",
+    height: "32px",
+    fontSize: "14px",
+    cursor: "pointer",
+    zIndex: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 0,
+  },
+
+  productModalImg: {
+    width: "100%",
+    height: "260px",
+    objectFit: "cover",
+    display: "block",
+    flexShrink: 0,
+  },
+
+  productModalBody: {
+    padding: "20px",
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+  },
+
+  productModalName: {
+    fontSize: "20px",
+    fontWeight: "800",
+    color: "#111",
+    lineHeight: "1.2",
+  },
+
+  productModalDesc: {
+    fontSize: "14px",
+    color: "#555",
+    lineHeight: "1.6",
+  },
+
+  productModalFooter: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: "4px",
+    gap: "12px",
+  },
+
+  productModalPrice: {
+    fontSize: "22px",
+    fontWeight: "800",
+    color: "#28a745",
+  },
+
+  productModalBtn: {
+    background: "#28a745",
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    padding: "12px 20px",
+    fontSize: "15px",
+    fontWeight: "700",
+    cursor: "pointer",
   },
 
   cart: {
