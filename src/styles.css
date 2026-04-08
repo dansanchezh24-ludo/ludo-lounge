@@ -20,14 +20,14 @@ body {
   z-index: 1000;
   background: #111;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 8px 20px;
+  padding: 10px 20px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
 .header-logo {
-  height: 58px;
+  height: 75px;
   object-fit: contain;
 }
 
@@ -35,7 +35,8 @@ body {
   background: transparent;
   border: none;
   padding: 4px;
-  position: relative;
+  position: absolute;
+  right: 20px;
   cursor: pointer;
 }
 
@@ -45,7 +46,7 @@ body {
 }
 
 .cart-img {
-  height: 46px;
+  height: 62px;
   object-fit: contain;
   display: block;
   border-radius: 8px;
@@ -365,17 +366,16 @@ section {
   }
 
   .header-logo {
-    height: 70px;
+    height: 72px;
     object-fit: contain;
   }
 
   .cart-btn {
-    position: absolute;
-    right: 14px;
+    right: 12px;
   }
 
   .cart-img {
-    height: 38px;
+    height: 54px;
   }
 
   /* Sidebar → barra horizontal deslizable */
@@ -463,10 +463,10 @@ section {
   }
 
   .header-logo {
-    height: 60px;
+    height: 62px;
   }
 
   .cart-img {
-    height: 32px;
+    height: 46px;
   }
 }
