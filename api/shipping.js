@@ -5,6 +5,49 @@
 const ZIP_FROM = "45239"; // Zapopan, Jalisco
 const OAUTH_URL = "https://pro.skydropx.com/api/v1/oauth/token";
 const QUOTATIONS_URL = "https://pro.skydropx.com/api/v1/quotations";
+const POSTAL_CODES_URL = "https://pro.skydropx.com/api/v1/postal_codes";
+
+// Área fija del remitente (Zapopan, Jalisco)
+const ADDRESS_FROM_AREA = {
+  area_level1: "Jalisco",
+  area_level2: "Zapopan",
+  area_level3: "Zapopan",
+};
+
+// Cache en memoria para áreas por CP
+const areaCache = new Map();
+
+async function getAreaForZip(zip, token) {
+  if (areaCache.has(zip)) return areaCache.get(zip);
+  try {
+    const r = await fetch(`${POSTAL_CODES_URL}?postal_code=${zip}&country_code=mx`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (r.ok) {
+      const d = await r.json();
+      // Skydropx devuelve un array de coincidencias; tomamos la primera
+      const item =
+        d?.data?.[0]?.attributes ||
+        d?.data?.attributes ||
+        d?.[0] ||
+        d?.postal_codes?.[0] ||
+        null;
+      if (item) {
+        const area = {
+          area_level1: item.area_level1 || item.state || item.estado || "Desconocido",
+          area_level2: item.area_level2 || item.municipality || item.municipio || item.city || "Desconocido",
+          area_level3: item.area_level3 || item.neighborhood || item.colonia || item.suburb || "Desconocido",
+        };
+        areaCache.set(zip, area);
+        return area;
+      }
+    }
+  } catch (_) { /* fallback abajo */ }
+  // Fallback genérico para que la cotización no falle por validación de strings vacíos
+  const fallback = { area_level1: "Mexico", area_level2: "Mexico", area_level3: "Mexico" };
+  areaCache.set(zip, fallback);
+  return fallback;
+}
 
 // Cache de token en memoria (persiste entre invocaciones tibias de la serverless)
 let cachedToken = null;
@@ -107,6 +150,9 @@ export default async function handler(req, res) {
   try {
     const token = await getAccessToken();
 
+    // Lookup de área para el CP destino (la API v2 ahora exige area_level1/2/3)
+    const toArea = await getAreaForZip(zip_to, token);
+
     // 1) Crear la cotización
     const createRes = await fetch(QUOTATIONS_URL, {
       method: "POST",
@@ -116,8 +162,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         quotation: {
-          address_from: { country_code: "mx", postal_code: ZIP_FROM },
-          address_to:   { country_code: "mx", postal_code: zip_to  },
+          address_from: { country_code: "mx", postal_code: ZIP_FROM, ...ADDRESS_FROM_AREA },
+          address_to:   { country_code: "mx", postal_code: zip_to,   ...toArea            },
           parcels: [{
             weight: totalWeight,
             length: maxLength,
