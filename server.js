@@ -54,8 +54,57 @@ const sendStatusEmail = async (order) => {
   }
 };
 
-// 🚚 COTIZAR ENVÍO (proxy a Skydropx)
+// 🚚 COTIZAR ENVÍO (proxy a Skydropx Pro API v2, OAuth2 client_credentials)
 const ZIP_FROM = "45239"; // Zapopan, Jalisco
+const SKYDROPX_OAUTH_URL = "https://pro.skydropx.com/api/v1/oauth/token";
+const SKYDROPX_QUOTATIONS_URL = "https://pro.skydropx.com/api/v1/quotations";
+
+let skydropxToken = null;
+let skydropxExpiresAt = 0;
+
+async function getSkydropxToken() {
+  const now = Date.now();
+  if (skydropxToken && now < skydropxExpiresAt) return skydropxToken;
+
+  const clientId = process.env.SKYDROPX_CLIENT_ID;
+  const clientSecret = process.env.SKYDROPX_CLIENT_SECRET;
+  if (!clientId || !clientSecret) throw new Error("Faltan SKYDROPX_CLIENT_ID / SKYDROPX_CLIENT_SECRET");
+
+  const body = new URLSearchParams({
+    grant_type: "client_credentials",
+    client_id: clientId,
+    client_secret: clientSecret,
+  });
+
+  const response = await fetch(SKYDROPX_OAUTH_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  if (!response.ok) throw new Error(`OAuth HTTP ${response.status}: ${await response.text()}`);
+
+  const data = await response.json();
+  skydropxToken = data.access_token;
+  skydropxExpiresAt = now + ((data.expires_in || 7200) - 60) * 1000;
+  return skydropxToken;
+}
+
+async function waitSkydropxRates(quotationId, token, maxAttempts = 12) {
+  for (let i = 0; i < maxAttempts; i++) {
+    const r = await fetch(`${SKYDROPX_QUOTATIONS_URL}/${quotationId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!r.ok) throw new Error(`Quotation GET HTTP ${r.status}`);
+    const d = await r.json();
+    const raw = d.data?.attributes?.rates || d.data?.rates || d.rates || [];
+    const ready = raw.filter(
+      (x) => x.success !== false && (x.total != null || x.amount_local != null || x.total_pricing != null)
+    );
+    if (ready.length > 0) return ready;
+    await new Promise((res) => setTimeout(res, 800));
+  }
+  throw new Error("Cotización expiró antes de devolver tarifas");
+}
 
 app.post("/api/shipping", async (req, res) => {
   const { zip_to, items } = req.body;
@@ -69,8 +118,7 @@ app.post("/api/shipping", async (req, res) => {
   const maxWidth  = Math.max(...items.map((i) => i.width  || 20));
   const maxHeight = Math.max(...items.map((i) => i.height || 10));
 
-  const token = process.env.SKYDROPX_TOKEN;
-  if (!token) {
+  if (!process.env.SKYDROPX_CLIENT_ID || !process.env.SKYDROPX_CLIENT_SECRET) {
     return res.json({
       rates: [
         { id: "mock1", carrier: "FedEx",    service: "FedEx Ground",         price: 150, days: 3 },
@@ -83,29 +131,41 @@ app.post("/api/shipping", async (req, res) => {
   }
 
   try {
-    const response = await fetch("https://api.skydropx.com/v1/quotations", {
+    const token = await getSkydropxToken();
+
+    const createRes = await fetch(SKYDROPX_QUOTATIONS_URL, {
       method: "POST",
       headers: {
-        Authorization: `Token token=${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        zip_from: ZIP_FROM,
-        zip_to,
-        parcel: { weight: totalWeight, height: maxHeight, width: maxWidth, length: maxLength },
+        quotation: {
+          address_from: { country_code: "mx", postal_code: ZIP_FROM },
+          address_to:   { country_code: "mx", postal_code: zip_to  },
+          parcels: [{ weight: totalWeight, length: maxLength, width: maxWidth, height: maxHeight }],
+        },
       }),
     });
-    const data = await response.json();
-    const rates = (data.data || [])
-      .map((q) => ({
-        id:      q.id,
-        carrier: q.attributes.carrier_name || "Paquetería",
-        service: q.attributes.service_name  || "Estándar",
-        price:   parseFloat(q.attributes.total_price),
-        days:    q.attributes.estimated_days ?? q.attributes.days ?? "?",
+    if (!createRes.ok) throw new Error(`POST quotation HTTP ${createRes.status}: ${await createRes.text()}`);
+
+    const createData = await createRes.json();
+    const quotationId = createData.data?.id || createData.id || createData.quotation?.id;
+    if (!quotationId) throw new Error(`Respuesta sin ID: ${JSON.stringify(createData).slice(0,200)}`);
+
+    const rawRates = await waitSkydropxRates(quotationId, token);
+    const rates = rawRates
+      .map((r) => ({
+        id:      r.id,
+        carrier: r.provider_name || r.carrier_name || r.provider || "Paquetería",
+        service: r.provider_service_name || r.service_level_name || r.service_name || "Estándar",
+        price:   parseFloat(r.total ?? r.amount_local ?? r.total_pricing),
+        days:    r.days ?? r.estimated_days ?? "?",
       }))
-      .filter((r) => !isNaN(r.price))
+      .filter((r) => !isNaN(r.price) && r.price > 0)
       .sort((a, b) => a.price - b.price);
+
+    if (rates.length === 0) throw new Error("Skydropx no devolvió tarifas válidas");
     res.json({ rates });
   } catch (err) {
     console.error("Skydropx error:", err.message);
@@ -114,7 +174,7 @@ app.post("/api/shipping", async (req, res) => {
         { id: "fb1", carrier: "Estafeta", service: "Terrestre", price: 130, days: 5 },
         { id: "fb2", carrier: "FedEx",    service: "Ground",     price: 160, days: 3 },
       ],
-      warning: "Cotización aproximada",
+      warning: "Cotización aproximada — error al conectar con Skydropx",
     });
   }
 });
