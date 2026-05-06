@@ -1,22 +1,39 @@
 # -------------------------------
-# DEPLOY LUDO AUTOMÁTICO CON PR
+# DEPLOY LUDO AUTOMATICO CON PR
 # -------------------------------
+# Lee tokens desde .env (NO committear el .env).
+# Variables requeridas: VC_TOKEN, GITHUB_TOKEN, GITHUB_USER, GITHUB_REPO
+# Ver scripts/.env.example para referencia.
 
-# --- CONFIGURACIÓN ---
-# Token de Vercel
-$env:VC_TOKEN = "vcp_5njO7vYzTgjV3EneecWfSXVA64Ar6erNKafsejsoJfnMbYoUVN1KnzKf"
+# --- CARGAR .env ---
+$envFile = Join-Path $PSScriptRoot "..\.env"
+if (Test-Path $envFile) {
+    Get-Content $envFile | ForEach-Object {
+        if ($_ -match '^\s*([^#=\s]+)\s*=\s*(.*?)\s*$') {
+            $name  = $matches[1].Trim()
+            $value = $matches[2].Trim().Trim('"').Trim("'")
+            if ($name -and -not (Test-Path "env:$name")) {
+                Set-Item -Path "env:$name" -Value $value
+            }
+        }
+    }
+} else {
+    Write-Host "No se encontro .env en la raiz del proyecto. Crea uno basado en scripts/.env.example" -ForegroundColor Red
+    exit 1
+}
 
-# Token de GitHub (con permisos repo)
-$githubToken = "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"
+# --- VALIDAR VARIABLES ---
+$required = @("VC_TOKEN", "GITHUB_TOKEN", "GITHUB_USER", "GITHUB_REPO")
+$missing  = $required | Where-Object { -not (Get-Item "env:$_" -ErrorAction SilentlyContinue) }
+if ($missing) {
+    Write-Host "Faltan variables en .env: $($missing -join ', ')" -ForegroundColor Red
+    exit 1
+}
 
-# Usuario y repositorio
-$githubUser = "dansanchezh24-ludo"
-$githubRepo = "ludo-store"
-
-# Rama temporal
-$tempBranch = "deploy-temp"
-
-# --- FIN CONFIGURACIÓN ---
+$githubToken = $env:GITHUB_TOKEN
+$githubUser  = $env:GITHUB_USER
+$githubRepo  = $env:GITHUB_REPO
+$tempBranch  = if ($env:DEPLOY_BRANCH) { $env:DEPLOY_BRANCH } else { "deploy-temp" }
 
 Write-Host "Deteniendo procesos Node..." -ForegroundColor Cyan
 Stop-Process -Name node -Force -ErrorAction SilentlyContinue
@@ -29,7 +46,7 @@ npm cache clean --force
 Write-Host "Instalando dependencias..." -ForegroundColor Cyan
 npm install --legacy-peer-deps
 
-Write-Host "Generando build de producción..." -ForegroundColor Cyan
+Write-Host "Generando build de produccion..." -ForegroundColor Cyan
 npm run build
 
 # --- PUSH A GITHUB ---
@@ -37,15 +54,15 @@ Write-Host "Creando rama temporal para push..." -ForegroundColor Cyan
 git checkout -b $tempBranch
 
 git add package.json package-lock.json dist -f
-git commit -m "Deploy automático: build lista para Vercel" -ErrorAction SilentlyContinue
+git commit -m "Deploy automatico: build lista para Vercel" -ErrorAction SilentlyContinue
 
 Write-Host "Haciendo push a rama temporal $tempBranch..." -ForegroundColor Cyan
-git push https://$githubToken@github.com/$githubUser/$githubRepo.git $tempBranch -f
+git push "https://$githubToken@github.com/$githubUser/$githubRepo.git" $tempBranch -f
 
 # --- CREAR PULL REQUEST ---
-Write-Host "Creando pull request automáticamente..." -ForegroundColor Cyan
+Write-Host "Creando pull request automaticamente..." -ForegroundColor Cyan
 $prBody = @{
-    title = "Deploy automático: build lista para Vercel"
+    title = "Deploy automatico: build lista para Vercel"
     head  = $tempBranch
     base  = "main"
     body  = "Este PR contiene la build lista para deploy en Vercel."
