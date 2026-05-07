@@ -191,16 +191,20 @@ export default function Checkout({ cart, clearCart, onClose }) {
             </div>
 
             <div style={styles.paymentBox}>
-              <label style={styles.paymentOption}>
-                <input type="radio" checked={form.paymentMethod === "paypal"}
-                  onChange={() => setForm({ ...form, paymentMethod: "paypal" })} />
+              <button
+                type="button"
+                style={{ ...styles.paymentTab, ...(form.paymentMethod === "paypal" ? styles.paymentTabActive : {}) }}
+                onClick={() => setForm({ ...form, paymentMethod: "paypal" })}
+              >
                 PayPal
-              </label>
-              <label style={styles.paymentOption}>
-                <input type="radio" checked={form.paymentMethod === "transferencia"}
-                  onChange={() => setForm({ ...form, paymentMethod: "transferencia" })} />
+              </button>
+              <button
+                type="button"
+                style={{ ...styles.paymentTab, borderRight: "none", ...(form.paymentMethod === "transferencia" ? styles.paymentTabActive : {}) }}
+                onClick={() => setForm({ ...form, paymentMethod: "transferencia" })}
+              >
                 Transferencia
-              </label>
+              </button>
             </div>
 
             {/* PAYPAL */}
@@ -319,8 +323,9 @@ const styles = {
   },
 
   // Pago
-  paymentBox: { display: "flex", gap: 20, margin: "12px 0" },
-  paymentOption: { display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 15 },
+  paymentBox: { display: "flex", margin: "12px 0", borderRadius: 8, overflow: "hidden", border: "2px solid #ddd" },
+  paymentTab: { flex: 1, padding: "12px 8px", border: "none", borderRight: "2px solid #ddd", background: "#f5f5f5", cursor: "pointer", fontSize: 15, fontWeight: 500, color: "#555", transition: "background 0.2s" },
+  paymentTabActive: { background: "#0070ba", color: "#fff", fontWeight: 700 },
   transferBox: { background: "#f5f5f5", padding: 12, borderRadius: 8, fontSize: 14, margin: "10px 0" },
 
   // Warning

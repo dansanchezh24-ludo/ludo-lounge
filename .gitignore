@@ -5,3 +5,10 @@ vite
 .env
 .vercel
 .env*.local
+
+# Claude Code (estado local de la herramienta)
+.claude/
+CLAUDE.md
+
+# Graphify (output regenerable)
+graphify-out/
