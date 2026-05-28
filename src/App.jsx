@@ -27,7 +27,8 @@ export default function App() {
 
   if (isAdmin) return <Admin />;
 
-  const categories = ["Todos", ...new Set(products.map(p => p.category))];
+  const categoryOrder = ["Todos", "UNO", "Monopoly", "Catan", "Familiar", "Adultos", "Adolescentes", "Niños", "Agilidad Mental", "Casino"];
+  const categories = categoryOrder.filter(c => c === "Todos" || products.some(p => p.category === c));
 
   const filteredProducts =
     selectedCategory === "Todos"
