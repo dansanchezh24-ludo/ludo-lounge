@@ -637,7 +637,7 @@ section {
   }
 
   .search-wrap {
-    max-width: 200px;
+    max-width: 130px;
   }
 
   /* Grid: 2 columnas */
@@ -693,6 +693,44 @@ section {
 
   .cart-img {
     height: 46px;
+  }
+}
+
+/* =====================
+   RESPONSIVE MÓVIL PEQUEÑO — HEADER DOS FILAS (≤480px)
+   ===================== */
+@media (max-width: 480px) {
+  .site-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 6px 58px 6px 14px;
+    gap: 4px;
+  }
+
+  .header-logo {
+    position: static;
+    transform: none;
+    height: 40px;
+    flex: 0 0 auto;
+    order: -1;
+  }
+
+  .header-left {
+    flex: 0 0 100%;
+    align-items: center;
+  }
+
+  .search-wrap {
+    max-width: calc(100% - 10px);
+    width: 100%;
+  }
+
+  .cart-btn {
+    top: 6px;
+  }
+
+  .app-layout {
+    margin-top: 92px;
   }
 }
 
