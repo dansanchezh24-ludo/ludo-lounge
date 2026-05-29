@@ -34,11 +34,13 @@ export default function App() {
 
   if (isAdmin) return <Admin />;
 
-  const categoryOrder = ["Todos", "UNO", "Monopoly", "Catan", "Familiar", "Adultos", "Adolescentes", "Niños", "Agilidad Mental", "Casino"];
-  const categories = categoryOrder.filter(c => c === "Todos" || products.some(p => p.category === c));
+  const categoryOrder = ["Todos", "🔥 Top", "UNO", "Monopoly", "Catan", "Familiar", "Adultos", "Adolescentes", "Niños", "Agilidad Mental", "Casino"];
+  const categories = categoryOrder.filter(c => c === "Todos" || c === "🔥 Top" || products.some(p => p.category === c));
 
   const filteredProducts = products.filter(p => {
-    const matchesCategory = selectedCategory === "Todos" || p.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "Todos" ||
+      (selectedCategory === "🔥 Top" ? TOP_SELLERS.has(p.id) : p.category === selectedCategory);
     const matchesSearch = searchQuery === "" || p.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -166,7 +168,7 @@ export default function App() {
         <div className="footer-inner">
           <div className="footer-brand">
             <img src="/images/nuevologoludolounge-encabezadopagina.jpeg" alt="Ludo Lounge" className="footer-logo" />
-            <p className="footer-tagline">el juego correcto, sin la búsqueda eterna</p>
+            <p className="footer-tagline">"El Juego Correcto, Sin La Búsqueda Eterna"</p>
           </div>
           <div className="footer-links">
             <a

@@ -22,17 +22,69 @@ body {
   z-index: 1000;
   background: #fff;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 8px 80px;
+  padding: 8px 80px 8px 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.12);
 }
 
 .header-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   height: 60px;
   width: auto;
   object-fit: contain;
   display: block;
+  cursor: pointer;
+  -webkit-user-drag: none;
+}
+
+/* =====================
+   MODAL LOGO HEADER
+   ===================== */
+.logo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-modal-box {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 480px;
+  width: 90%;
+}
+
+.logo-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-modal-img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+  -webkit-user-drag: none;
 }
 
 .cart-btn {
@@ -59,12 +111,11 @@ body {
 /* =====================
    HEADER CENTER / SEARCH / TAGLINE
    ===================== */
-.header-center {
+.header-left {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
-  flex: 1;
 }
 
 .header-tagline {
