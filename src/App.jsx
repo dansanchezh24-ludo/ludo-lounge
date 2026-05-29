@@ -4,6 +4,12 @@ import Checkout from "./pages/Checkout";
 import Header from "./components/Header";
 import Admin from "./pages/Admin";
 
+// IDs de los top 10 más vendidos (al menos 1 por categoría)
+const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
+// 111=UNO Clásico, 101=Monopoly HP, 62=Catan Clásico, 81=Telestrations,
+// 39=Truth or Drink, 29=Star Wars Mandalorian, 6=Caperucita Roja,
+// 41=IQ Digits, 54=Casino Venecia, 50=Colour Code
+
 export default function App() {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -12,6 +18,7 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -30,10 +37,11 @@ export default function App() {
   const categoryOrder = ["Todos", "UNO", "Monopoly", "Catan", "Familiar", "Adultos", "Adolescentes", "Niños", "Agilidad Mental", "Casino"];
   const categories = categoryOrder.filter(c => c === "Todos" || products.some(p => p.category === c));
 
-  const filteredProducts =
-    selectedCategory === "Todos"
-      ? products
-      : products.filter(p => p.category === selectedCategory);
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = selectedCategory === "Todos" || p.category === selectedCategory;
+    const matchesSearch = searchQuery === "" || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const addToCart = (product) => {
     const exist = cart.find(i => i.id === product.id);
@@ -86,10 +94,15 @@ export default function App() {
       )}
 
       <Header
-        cartCount={cart.length}
+        cartCount={cart.reduce((acc, i) => acc + i.quantity, 0)}
         onCartClick={() => {
           setIsCartOpen(!isCartOpen);
           setShowCheckout(false);
+        }}
+        searchQuery={searchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          if (q !== "") setSelectedCategory("Todos");
         }}
       />
 
@@ -99,7 +112,7 @@ export default function App() {
           {categories.map((cat) => (
             <div
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => { setSelectedCategory(cat); setSearchQuery(""); }}
               className={`category-chip${selectedCategory === cat ? " active" : ""}`}
             >
               {cat}
@@ -109,6 +122,11 @@ export default function App() {
 
         {/* PRODUCTOS */}
         <main className="products-area">
+          {searchQuery && (
+            <p style={styles.searchInfo}>
+              {filteredProducts.length} resultado{filteredProducts.length !== 1 ? "s" : ""} para "<strong>{searchQuery}</strong>"
+            </p>
+          )}
           <div className="product-grid">
             {filteredProducts.map((product) => (
               <div
@@ -116,6 +134,10 @@ export default function App() {
                 className="product-card"
                 onClick={() => setSelectedProduct(product)}
               >
+                {/* BADGE TOP VENDIDO */}
+                {TOP_SELLERS.has(product.id) && (
+                  <div className="badge-top">🔥 Top Vendido</div>
+                )}
                 <img
                   src={product.image}
                   alt={product.name}
@@ -139,6 +161,35 @@ export default function App() {
         </main>
       </div>
 
+      {/* FOOTER */}
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-brand">
+            <img src="/images/nuevologoludolounge-encabezadopagina.jpeg" alt="Ludo Lounge" className="footer-logo" />
+            <p className="footer-tagline">el juego correcto, sin la búsqueda eterna</p>
+          </div>
+          <div className="footer-links">
+            <a
+              href="https://www.instagram.com/ludolounge.mx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link"
+            >
+              <span className="footer-link-icon">📸</span> @ludolounge.mx
+            </a>
+            <a
+              href="https://wa.me/523339077064"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link"
+            >
+              <span className="footer-link-icon">📞</span> +52 (33) 3907 7064
+            </a>
+          </div>
+          <p className="footer-copy">© {new Date().getFullYear()} Ludo Lounge — Todos los derechos reservados</p>
+        </div>
+      </footer>
+
       {/* MODAL DETALLE PRODUCTO */}
       {selectedProduct && (
         <div
@@ -156,6 +207,9 @@ export default function App() {
             >
               ✕
             </button>
+            {TOP_SELLERS.has(selectedProduct.id) && (
+              <div style={styles.modalBadge}>🔥 Top Vendido</div>
+            )}
             <img
               src={selectedProduct.image}
               alt={selectedProduct.name}
@@ -196,6 +250,9 @@ export default function App() {
         </div>
 
         <div style={styles.cartContent}>
+          {cart.length === 0 && (
+            <p style={{ padding: "20px", color: "#999", textAlign: "center" }}>Tu carrito está vacío</p>
+          )}
           {cart.map((item) => (
             <div key={item.id} style={styles.cartItem}>
               {item.name} x {item.quantity}
@@ -216,7 +273,7 @@ export default function App() {
               setShowCheckout(true);
             }}
             disabled={!cart.length}
-            style={styles.checkoutBtn}
+            style={{ ...styles.checkoutBtn, opacity: cart.length ? 1 : 0.5, cursor: cart.length ? "pointer" : "not-allowed" }}
           >
             Finalizar compra
           </button>
@@ -278,155 +335,4 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     fontWeight: "bold",
-    fontSize: "16px",
-    position: "sticky",
-    bottom: "0",
-  },
-
-  // MODAL PRODUCTO
-  productModal: {
-    background: "#fff",
-    borderRadius: "16px",
-    maxWidth: "500px",
-    width: "100%",
-    overflow: "hidden",
-    position: "relative",
-    maxHeight: "90vh",
-    display: "flex",
-    flexDirection: "column",
-  },
-
-  closeBtn: {
-    position: "absolute",
-    top: "12px",
-    right: "12px",
-    background: "rgba(0,0,0,0.55)",
-    color: "#fff",
-    border: "none",
-    borderRadius: "50%",
-    width: "32px",
-    height: "32px",
-    fontSize: "14px",
-    cursor: "pointer",
-    zIndex: 10,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 0,
-  },
-
-  productModalImg: {
-    width: "100%",
-    maxHeight: "300px",
-    objectFit: "contain",
-    display: "block",
-    flexShrink: 0,
-    background: "#f8f8f8",
-    padding: "10px",
-  },
-
-  productModalBody: {
-    padding: "20px",
-    overflowY: "auto",
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  },
-
-  productModalName: {
-    fontSize: "20px",
-    fontWeight: "800",
-    color: "#111",
-    lineHeight: "1.2",
-  },
-
-  productModalDesc: {
-    fontSize: "14px",
-    color: "#555",
-    lineHeight: "1.6",
-  },
-
-  productModalFooter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: "4px",
-    gap: "12px",
-  },
-
-  productModalPrice: {
-    fontSize: "22px",
-    fontWeight: "800",
-    color: "#28a745",
-  },
-
-  productModalBtn: {
-    background: "#28a745",
-    color: "#fff",
-    border: "none",
-    borderRadius: "10px",
-    padding: "12px 20px",
-    fontSize: "15px",
-    fontWeight: "700",
-    cursor: "pointer",
-  },
-
-  cart: {
-    position: "fixed",
-    top: 0,
-    width: "350px",
-    height: "100%",
-    background: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    zIndex: 1100,
-    transition: "right 0.3s ease",
-    boxShadow: "-5px 0 20px rgba(0,0,0,0.15)",
-  },
-
-  cartHeader: {
-    padding: "15px 20px",
-    borderBottom: "1px solid #eee",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    background: "#111",
-    color: "#fff",
-  },
-
-  cartContent: { flex: 1, overflowY: "auto", padding: "10px" },
-
-  cartItem: {
-    padding: "12px 8px",
-    borderBottom: "1px solid #f0f0f0",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    fontSize: "14px",
-  },
-
-  cartFooter: {
-    padding: "15px 20px",
-    borderTop: "1px solid #eee",
-    background: "#fafafa",
-  },
-
-  checkoutBtn: {
-    width: "100%",
-    marginTop: "10px",
-    padding: "13px",
-    background: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    fontWeight: "bold",
-    fontSize: "15px",
-  },
-
-  cartOverlay: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(0,0,0,0.4)",
-    zIndex: 1050,
-  },
-};
+    fontSi
