@@ -20,4 +20,29 @@ const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
             className="search-input"
             placeholder="Buscar juego..."
             value={searchQuery}
-            onC
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+          {searchQuery && (
+            <button className="search-clear" onClick={() => onSearchChange("")}>✕</button>
+          )}
+        </div>
+      </div>
+
+      {/* CARRITO */}
+      <button className="cart-btn" onClick={onCartClick}>
+        <span className="cart-icon-wrap">
+          <img
+            src="/images/logocarritodecompras.jpeg"
+            alt="Carrito"
+            className="cart-img"
+          />
+          {cartCount > 0 && (
+            <span className="cart-badge">{cartCount}</span>
+          )}
+        </span>
+      </button>
+    </header>
+  );
+};
+
+export default Header;

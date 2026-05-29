@@ -480,4 +480,180 @@ button:hover {
 /* =====================
    ADMIN
    ===================== */
-.admin-con
+.admin-container {
+  padding: 30px;
+}
+
+.admin-summary {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.filters button {
+  margin-right: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #111;
+  color: #fff;
+}
+
+/* =====================
+   TITULOS
+   ===================== */
+h1, h2, h3 {
+  margin-bottom: 10px;
+}
+
+section {
+  margin-bottom: 40px;
+}
+
+/* =====================
+   RESPONSIVE TABLET (≤768px)
+   ===================== */
+@media (max-width: 768px) {
+  .site-header {
+    padding: 6px 70px 6px 14px;
+  }
+
+  .app-layout {
+    margin-top: 62px;
+    flex-direction: column;
+  }
+
+  .header-logo {
+    height: 48px;
+    width: auto;
+  }
+
+  .cart-btn {
+    right: 10px;
+  }
+
+  .cart-img {
+    height: 54px;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 10px;
+    gap: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category-chip {
+    flex-shrink: 0;
+    border-bottom: none;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    white-space: nowrap;
+    border: 1px solid #333;
+  }
+
+  .category-chip.active {
+    border-color: #28a745;
+  }
+
+  .header-tagline {
+    display: none;
+  }
+
+  .search-wrap {
+    max-width: 200px;
+  }
+
+  /* Grid: 2 columnas */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .product-img {
+    height: 140px;
+  }
+
+  .product-card h3 {
+    font-size: 12px;
+  }
+
+  .price {
+    font-size: 14px;
+  }
+
+  .btn-add {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+
+  .cart-panel {
+    width: 100%;
+  }
+}
+
+/* =====================
+   RESPONSIVE MÓVIL PEQUEÑO (≤400px)
+   ===================== */
+@media (max-width: 400px) {
+  .product-grid {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .product-img {
+    height: 110px;
+  }
+
+  .product-card-body {
+    padding: 9px;
+  }
+
+  .header-logo {
+    height: 40px;
+    width: auto;
+  }
+
+  .cart-img {
+    height: 46px;
+  }
+}
+
+/* =====================
+   MODAL PRODUCTO RESPONSIVE
+   ===================== */
+@media (max-width: 768px) {
+  .product-modal {
+    max-width: calc(100% - 24px) !important;
+    width: 100% !important;
+    border-radius: 16px !important;
+    max-height: 88vh !important;
+    margin: auto !important;
+  }
+}
