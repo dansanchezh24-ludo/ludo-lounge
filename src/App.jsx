@@ -335,4 +335,174 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     fontWeight: "bold",
-    fontSi
+    fontSize: "16px",
+    position: "sticky",
+    bottom: "0",
+  },
+
+  productModal: {
+    background: "#fff",
+    borderRadius: "16px",
+    maxWidth: "500px",
+    width: "100%",
+    overflow: "hidden",
+    position: "relative",
+    maxHeight: "90vh",
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  closeBtn: {
+    position: "absolute",
+    top: "12px",
+    right: "12px",
+    background: "rgba(0,0,0,0.55)",
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: "32px",
+    height: "32px",
+    fontSize: "14px",
+    cursor: "pointer",
+    zIndex: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 0,
+  },
+
+  modalBadge: {
+    position: "absolute",
+    top: "12px",
+    left: "12px",
+    background: "#ff6b00",
+    color: "#fff",
+    fontSize: "11px",
+    fontWeight: "800",
+    padding: "4px 10px",
+    borderRadius: "20px",
+    zIndex: 10,
+    letterSpacing: "0.3px",
+  },
+
+  productModalImg: {
+    width: "100%",
+    maxHeight: "300px",
+    objectFit: "contain",
+    display: "block",
+    flexShrink: 0,
+    background: "#f8f8f8",
+    padding: "10px",
+  },
+
+  productModalBody: {
+    padding: "20px",
+    overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+  },
+
+  productModalName: {
+    fontSize: "20px",
+    fontWeight: "800",
+    color: "#111",
+    lineHeight: "1.2",
+  },
+
+  productModalDesc: {
+    fontSize: "14px",
+    color: "#555",
+    lineHeight: "1.6",
+  },
+
+  productModalFooter: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: "4px",
+    gap: "12px",
+  },
+
+  productModalPrice: {
+    fontSize: "22px",
+    fontWeight: "800",
+    color: "#28a745",
+  },
+
+  productModalBtn: {
+    background: "#28a745",
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    padding: "12px 20px",
+    fontSize: "15px",
+    fontWeight: "700",
+    cursor: "pointer",
+  },
+
+  searchInfo: {
+    padding: "10px 20px 0",
+    fontSize: "13px",
+    color: "#666",
+  },
+
+  cart: {
+    position: "fixed",
+    top: 0,
+    width: "350px",
+    height: "100%",
+    background: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    zIndex: 1100,
+    transition: "right 0.3s ease",
+    boxShadow: "-5px 0 20px rgba(0,0,0,0.15)",
+  },
+
+  cartHeader: {
+    padding: "15px 20px",
+    borderBottom: "1px solid #eee",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: "#111",
+    color: "#fff",
+  },
+
+  cartContent: { flex: 1, overflowY: "auto", padding: "10px" },
+
+  cartItem: {
+    padding: "12px 8px",
+    borderBottom: "1px solid #f0f0f0",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    fontSize: "14px",
+  },
+
+  cartFooter: {
+    padding: "15px 20px",
+    borderTop: "1px solid #eee",
+    background: "#fafafa",
+  },
+
+  checkoutBtn: {
+    width: "100%",
+    marginTop: "10px",
+    padding: "13px",
+    background: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    fontSize: "15px",
+  },
+
+  cartOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.4)",
+    zIndex: 1050,
+  },
+};
