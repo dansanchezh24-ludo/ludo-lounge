@@ -286,13 +286,13 @@ app.put("/api/orders/:id", async (req, res) => {
 
     const { data: updatedOrder, error: updateError } = await supabase
       .from("orders")
-      .update({ ...mapOrder(req.body), status: nextStatus })
+      .update({ status: nextStatus, guide: req.body.guide ?? order.guide })
       .eq("id", id)
       .select()
       .single();
     if (updateError) throw updateError;
 
-    sendStatusEmail(updatedOrder);
+    await sendStatusEmail(updatedOrder);
     res.json({ success: true, order: updatedOrder });
   } catch (error) {
     console.error("Error actualizando pedido:", error);
