@@ -5,6 +5,14 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
+const setCors = (req, res) => {
+  const allowed = (process.env.CORS_ORIGIN || "http://localhost:5173").split(",").map(o => o.trim());
+  const origin = req.headers.origin;
+  if (allowed.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+};
+
 const resend = new Resend(process.env.RESEND_KEY);
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -85,6 +93,8 @@ const sendStatusEmail = async (order) => {
 };
 
 export default async function handler(req, res) {
+  setCors(req, res);
+  if (req.method === "OPTIONS") return res.status(204).end();
   try {
     // POST — crear pedido (público, no requiere token)
     if (req.method === "POST") {
