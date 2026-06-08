@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
-  const [logoOpen, setLogoOpen] = useState(false);
-
+const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange, onLogoClick }) => {
   return (
     <>
       <header className="site-header">
@@ -30,7 +28,8 @@ const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
           alt="Ludo Lounge"
           className="header-logo"
           draggable="false"
-          onClick={() => setLogoOpen(true)}
+          onClick={onLogoClick}
+          style={{ cursor: "default" }}
         />
 
         {/* CARRITO */}
@@ -47,21 +46,6 @@ const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
           </span>
         </button>
       </header>
-
-      {/* MODAL LOGO */}
-      {logoOpen && (
-        <div className="logo-modal-overlay" onClick={() => setLogoOpen(false)}>
-          <div className="logo-modal-box" onClick={(e) => e.stopPropagation()}>
-            <button className="logo-modal-close" onClick={() => setLogoOpen(false)}>✕</button>
-            <img
-              src="/images/nuevologoludolounge-encabezadopagina.jpeg"
-              alt="Ludo Lounge"
-              className="logo-modal-img"
-              draggable="false"
-            />
-          </div>
-        </div>
-      )}
     </>
   );
 };

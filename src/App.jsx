@@ -20,6 +20,22 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const logoClicksRef = React.useRef(0);
+  const logoClickTimerRef = React.useRef(null);
+
+  const handleLogoSecretClick = () => {
+    logoClicksRef.current += 1;
+    clearTimeout(logoClickTimerRef.current);
+    if (logoClicksRef.current >= 5) {
+      logoClicksRef.current = 0;
+      setIsAdmin(true);
+    } else {
+      logoClickTimerRef.current = setTimeout(() => {
+        logoClicksRef.current = 0;
+      }, 2000);
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
@@ -71,11 +87,6 @@ export default function App() {
 
   return (
     <>
-      {/* ADMIN */}
-      <div style={styles.adminAccess}>
-        <button onClick={() => setIsAdmin(true)}>⚙️</button>
-      </div>
-
       {/* BIENVENIDA */}
       {showWelcome && (
         <div style={styles.overlay}>
@@ -106,6 +117,7 @@ export default function App() {
           setSearchQuery(q);
           if (q !== "") setSelectedCategory("Todos");
         }}
+        onLogoClick={handleLogoSecretClick}
       />
 
       <div className="app-layout">
@@ -297,8 +309,6 @@ export default function App() {
 }
 
 const styles = {
-  adminAccess: { position: "fixed", bottom: 10, right: 10, zIndex: 9999 },
-
   overlay: {
     position: "fixed",
     inset: 0,
