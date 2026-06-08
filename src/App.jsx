@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { products } from "./data/products";
 import Checkout from "./pages/Checkout";
 import Header from "./components/Header";
@@ -20,8 +20,8 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const logoClicksRef = React.useRef(0);
-  const logoClickTimerRef = React.useRef(null);
+  const logoClicksRef = useRef(0);
+  const logoClickTimerRef = useRef(null);
 
   const handleLogoSecretClick = () => {
     logoClicksRef.current += 1;
@@ -35,6 +35,10 @@ export default function App() {
       }, 2000);
     }
   };
+
+  useEffect(() => {
+    return () => clearTimeout(logoClickTimerRef.current);
+  }, []);
 
   useEffect(() => {
     const handleEsc = (e) => {
