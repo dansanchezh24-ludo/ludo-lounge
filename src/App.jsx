@@ -3,6 +3,7 @@ import { products } from "./data/products";
 import Checkout from "./pages/Checkout";
 import Header from "./components/Header";
 import WelcomeModal from "./components/WelcomeModal";
+import Sidebar from "./components/Sidebar";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
 const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
@@ -86,17 +87,11 @@ export default function App() {
 
       <div className="app-layout">
         {/* SIDEBAR / CATEGORÍAS */}
-        <aside className="sidebar">
-          {categories.map((cat) => (
-            <div
-              key={cat}
-              onClick={() => { setSelectedCategory(cat); setSearchQuery(""); }}
-              className={`category-chip${selectedCategory === cat ? " active" : ""}`}
-            >
-              {cat}
-            </div>
-          ))}
-        </aside>
+        <Sidebar
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelect={(cat) => { setSelectedCategory(cat); setSearchQuery(""); }}
+        />
 
         {/* PRODUCTOS */}
         <main className="products-area">
