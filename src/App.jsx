@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import WelcomeModal from "./components/WelcomeModal";
 import Sidebar from "./components/Sidebar";
 import ProductCard from "./components/ProductCard";
+import Cart from "./components/Cart";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
 const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
@@ -186,53 +187,15 @@ export default function App() {
         </div>
       )}
 
-      {/* CARRITO OVERLAY */}
-      {isCartOpen && (
-        <div
-          style={styles.cartOverlay}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsCartOpen(false);
-          }}
-        />
-      )}
-
-      <div style={{ ...styles.cart, right: isCartOpen ? 0 : "-400px" }}>
-        <div style={styles.cartHeader}>
-          <h3>Carrito</h3>
-          <button onClick={() => setIsCartOpen(false)}>✖</button>
-        </div>
-
-        <div style={styles.cartContent}>
-          {cart.length === 0 && (
-            <p style={{ padding: "20px", color: "#999", textAlign: "center" }}>Tu carrito está vacío</p>
-          )}
-          {cart.map((item) => (
-            <div key={item.id} style={styles.cartItem}>
-              {item.name} x {item.quantity}
-              <div>
-                <button onClick={() => removeFromCart(item)}>-</button>
-                <button onClick={() => addToCart(item)}>+</button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={styles.cartFooter}>
-          <b>Total: ${total}</b>
-
-          <button
-            onClick={() => {
-              setIsCartOpen(false);
-              setShowCheckout(true);
-            }}
-            disabled={!cart.length}
-            style={{ ...styles.checkoutBtn, opacity: cart.length ? 1 : 0.5, cursor: cart.length ? "pointer" : "not-allowed" }}
-          >
-            Finalizar compra
-          </button>
-        </div>
-      </div>
+      <Cart
+        isOpen={isCartOpen}
+        cart={cart}
+        total={total}
+        onClose={() => setIsCartOpen(false)}
+        onAdd={addToCart}
+        onRemove={removeFromCart}
+        onCheckout={() => { setIsCartOpen(false); setShowCheckout(true); }}
+      />
 
       {/* CHECKOUT */}
       {showCheckout ? (
@@ -366,64 +329,5 @@ const styles = {
     padding: "10px 20px 0",
     fontSize: "13px",
     color: "#666",
-  },
-
-  cart: {
-    position: "fixed",
-    top: 0,
-    width: "350px",
-    height: "100%",
-    background: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    zIndex: 1100,
-    transition: "right 0.3s ease",
-    boxShadow: "-5px 0 20px rgba(0,0,0,0.15)",
-  },
-
-  cartHeader: {
-    padding: "15px 20px",
-    borderBottom: "1px solid #eee",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    background: "#111",
-    color: "#fff",
-  },
-
-  cartContent: { flex: 1, overflowY: "auto", padding: "10px" },
-
-  cartItem: {
-    padding: "12px 8px",
-    borderBottom: "1px solid #f0f0f0",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    fontSize: "14px",
-  },
-
-  cartFooter: {
-    padding: "15px 20px",
-    borderTop: "1px solid #eee",
-    background: "#fafafa",
-  },
-
-  checkoutBtn: {
-    width: "100%",
-    marginTop: "10px",
-    padding: "13px",
-    background: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    fontWeight: "bold",
-    fontSize: "15px",
-  },
-
-  cartOverlay: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(0,0,0,0.4)",
-    zIndex: 1050,
   },
 };
