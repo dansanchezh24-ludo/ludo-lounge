@@ -4,6 +4,7 @@ import Checkout from "./pages/Checkout";
 import Header from "./components/Header";
 import WelcomeModal from "./components/WelcomeModal";
 import Sidebar from "./components/Sidebar";
+import ProductCard from "./components/ProductCard";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
 const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
@@ -102,33 +103,13 @@ export default function App() {
           )}
           <div className="product-grid">
             {filteredProducts.map((product) => (
-              <div
+              <ProductCard
                 key={product.id}
-                className="product-card"
+                product={product}
+                isTopSeller={TOP_SELLERS.has(product.id)}
+                onAddToCart={addToCart}
                 onClick={() => setSelectedProduct(product)}
-              >
-                {/* BADGE TOP VENDIDO */}
-                {TOP_SELLERS.has(product.id) && (
-                  <div className="badge-top">🔥 Top Vendido</div>
-                )}
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="product-img"
-                />
-                <div className="product-card-body">
-                  <h3>{product.name}</h3>
-                  <div className="product-footer">
-                    <span className="price">${product.price}</span>
-                    <button
-                      className="btn-add"
-                      onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                    >
-                      Agregar
-                    </button>
-                  </div>
-                </div>
-              </div>
+              />
             ))}
           </div>
         </main>
