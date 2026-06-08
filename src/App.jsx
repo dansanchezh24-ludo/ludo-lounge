@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { products } from "./data/products";
 import Checkout from "./pages/Checkout";
 import Header from "./components/Header";
-import Admin from "./pages/Admin";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
 const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
@@ -15,30 +14,9 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const logoClicksRef = useRef(0);
-  const logoClickTimerRef = useRef(null);
-
-  const handleLogoSecretClick = () => {
-    logoClicksRef.current += 1;
-    clearTimeout(logoClickTimerRef.current);
-    if (logoClicksRef.current >= 5) {
-      logoClicksRef.current = 0;
-      setIsAdmin(true);
-    } else {
-      logoClickTimerRef.current = setTimeout(() => {
-        logoClicksRef.current = 0;
-      }, 2000);
-    }
-  };
-
-  useEffect(() => {
-    return () => clearTimeout(logoClickTimerRef.current);
-  }, []);
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -51,8 +29,6 @@ export default function App() {
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
-
-  if (isAdmin) return <Admin />;
 
   const categoryOrder = ["Todos", "🔥 Top", "UNO", "Monopoly", "Catan", "Familiar", "Adultos", "Adolescentes", "Niños", "Agilidad Mental", "Casino"];
   const categories = categoryOrder.filter(c => c === "Todos" || c === "🔥 Top" || products.some(p => p.category === c));
@@ -121,7 +97,6 @@ export default function App() {
           setSearchQuery(q);
           if (q !== "") setSelectedCategory("Todos");
         }}
-        onLogoClick={handleLogoSecretClick}
       />
 
       <div className="app-layout">

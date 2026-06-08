@@ -1,6 +1,6 @@
 import React from "react";
 
-const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange, onLogoClick }) => {
+const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange }) => {
   return (
     <>
       <header className="site-header">
@@ -28,7 +28,6 @@ const Header = ({ cartCount, onCartClick, searchQuery, onSearchChange, onLogoCli
           alt="Ludo Lounge"
           className="header-logo"
           draggable="false"
-          onClick={onLogoClick}
           style={{ cursor: "default" }}
         />
 
