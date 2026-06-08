@@ -1,8 +1,9 @@
-import fs from "fs";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
+import jwt from "jsonwebtoken";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -20,10 +21,39 @@ app.use(cors({
 app.use(express.json());
 
 const resend = new Resend(process.env.RESEND_KEY);
-const ordersFile = "./backend/orders.json";
 
-// Crear archivo orders.json si no existe
-if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, "[]");
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+
+const verifyAdmin = (req) => {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith("Bearer ")) return false;
+  try {
+    jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const mapOrder = (body) => ({
+  name: body.name,
+  email: body.email,
+  phone: body.phone,
+  street: body.street,
+  number: body.number,
+  colony: body.colony,
+  city: body.city,
+  state: body.state,
+  zip: body.zip,
+  items: body.items,
+  total: body.total,
+  status: body.status,
+  payment_method: body.paymentMethod || body.payment_method,
+  guide: body.guide,
+});
 
 // 📧 Función para enviar correo según estatus
 const sendStatusEmail = async (order) => {
@@ -31,31 +61,38 @@ const sendStatusEmail = async (order) => {
     let subject = "";
     let html = "";
 
-    if (order.status === "pagado") {
+    if (order.status === "pendiente") {
+      subject = "Pedido recibido";
+      html = `
+        <h2>¡Recibimos tu pedido!</h2>
+        <p>Folio: ${order.id}</p>
+        <p>Total: $${order.total}</p>
+        <p>Por favor realiza tu transferencia a:</p>
+        <p><b>BANCO:</b> Mercado Pago W</p>
+        <p><b>CLABE:</b> 722969015506648176</p>
+        <p><b>BENEFICIARIO:</b> Laura Sofia Rodriguez Quintana</p>
+        <p>Una vez confirmado el pago actualizaremos tu pedido.</p>
+      `;
+    } else if (order.status === "pagado") {
       subject = "Pago confirmado";
       html = `<h2>Pago recibido</h2><p>Folio: ${order.id}</p>`;
-    }
-    if (order.status === "enviado") {
+    } else if (order.status === "enviado") {
       subject = "Pedido enviado";
-      html = `<h2>Tu pedido fue enviado</h2>
-              <p>Folio: ${order.id}</p>
-              <p>Guía: ${order.guide}</p>`;
-    }
-    if (order.status === "entregado") {
+      html = `<h2>Tu pedido fue enviado</h2><p>Folio: ${order.id}</p><p>Guía: ${order.guide}</p>`;
+    } else if (order.status === "entregado") {
       subject = "Pedido entregado";
       html = `<h2>Gracias por tu compra</h2><p>Folio: ${order.id}</p>`;
+    } else {
+      return;
     }
 
-    if (!subject) return;
-
-    console.log(`Enviando correo para pedido ${order.id} a ${order.email}`);
     await resend.emails.send({
-      from: "Ludo Lounge <onboarding@resend.dev>",
+      from: "Ludo Lounge <noreply@ludo-lounge.com>",
       to: order.email,
+      cc: "ludolounge01@gmail.com",
       subject,
       html,
     });
-    console.log(`Correo enviado para pedido ${order.id}`);
   } catch (error) {
     console.error("Error enviando correo:", error.message);
   }
@@ -187,42 +224,59 @@ app.post("/api/shipping", async (req, res) => {
 });
 
 // 📦 CREAR PEDIDO
-app.post("/api/orders", (req, res) => {
+app.post("/api/orders", async (req, res) => {
   try {
-    const orders = JSON.parse(fs.readFileSync(ordersFile));
-    const newOrder = { id: Date.now().toString(), ...req.body, createdAt: new Date() };
-    orders.push(newOrder);
-    fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
-    res.json({ success: true, orderId: newOrder.id });
+    const { data, error } = await supabase
+      .from("orders")
+      .insert([mapOrder(req.body)])
+      .select()
+      .single();
+    if (error) throw error;
+    await sendStatusEmail(data);
+    res.status(201).json({ success: true, orderId: data.id });
   } catch (error) {
+    console.error("Error al guardar pedido:", error);
     res.status(500).json({ error: "Error al guardar pedido" });
   }
 });
 
 // 📦 LISTAR PEDIDOS
-app.get("/api/orders", (req, res) => {
-  const orders = JSON.parse(fs.readFileSync(ordersFile));
-  res.json(orders);
+app.get("/api/orders", async (req, res) => {
+  if (!verifyAdmin(req)) return res.status(401).json({ error: "No autorizado" });
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener pedidos" });
+  }
 });
 
 // 📦 ACTUALIZAR PEDIDO
-app.put("/api/orders/:id", (req, res) => {
+app.put("/api/orders/:id", async (req, res) => {
+  if (!verifyAdmin(req)) return res.status(401).json({ error: "No autorizado" });
   try {
-    const orders = JSON.parse(fs.readFileSync(ordersFile));
-    const index = orders.findIndex((o) => o.id === req.params.id);
-    if (index === -1) return res.status(404).json({ error: "Pedido no encontrado" });
+    const id = req.params.id;
+    const { data: order, error: fetchError } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (fetchError || !order) return res.status(404).json({ error: "Pedido no encontrado" });
 
-    const order = orders[index];
     const nextStatus = req.body.status || order.status;
-
-    // Validación de flujo
     const transferenciaFlow = ["pendiente", "pagado", "enviado", "entregado"];
     const paypalFlow = ["pagado", "enviado", "entregado"];
 
-    if (order.paymentMethod === "transferencia" && transferenciaFlow.indexOf(nextStatus) < transferenciaFlow.indexOf(order.status)) {
-      return res.status(400).json({ error: "Flujo inválido" });
-    }
-    if (order.paymentMethod === "paypal" && paypalFlow.indexOf(nextStatus) < paypalFlow.indexOf(order.status)) {
+    if (
+      (order.payment_method === "transferencia" &&
+        transferenciaFlow.indexOf(nextStatus) < transferenciaFlow.indexOf(order.status)) ||
+      (order.payment_method === "paypal" &&
+        paypalFlow.indexOf(nextStatus) < paypalFlow.indexOf(order.status))
+    ) {
       return res.status(400).json({ error: "Flujo inválido" });
     }
 
@@ -230,9 +284,13 @@ app.put("/api/orders/:id", (req, res) => {
       return res.status(400).json({ error: "Número de guía requerido" });
     }
 
-    const updatedOrder = { ...order, ...req.body, status: nextStatus };
-    orders[index] = updatedOrder;
-    fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
+    const { data: updatedOrder, error: updateError } = await supabase
+      .from("orders")
+      .update({ ...mapOrder(req.body), status: nextStatus })
+      .eq("id", id)
+      .select()
+      .single();
+    if (updateError) throw updateError;
 
     sendStatusEmail(updatedOrder);
     res.json({ success: true, order: updatedOrder });
@@ -249,7 +307,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "dist")));
 
 // Cualquier ruta que no sea /api se envía a index.html
-app.get("*", (req, res) => {
+app.get("/{*path}", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
