@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { products } from "./data/products";
 import Checkout from "./pages/Checkout";
 import Header from "./components/Header";
+import WelcomeModal from "./components/WelcomeModal";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
 const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
@@ -68,23 +69,7 @@ export default function App() {
   return (
     <>
       {/* BIENVENIDA */}
-      {showWelcome && (
-        <div style={styles.overlay}>
-          <div style={styles.modal}>
-            <img
-              src="/images/bienvenida.png"
-              alt="Bienvenida"
-              style={styles.modalImage}
-            />
-            <button
-              onClick={() => setShowWelcome(false)}
-              style={styles.modalBtn}
-            >
-              Entrar al catálogo
-            </button>
-          </div>
-        </div>
-      )}
+      {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
 
       <Header
         cartCount={cart.reduce((acc, i) => acc + i.quantity, 0)}
@@ -298,37 +283,6 @@ const styles = {
     zIndex: 2000,
     padding: "20px",
     overflowY: "auto",
-  },
-
-  modal: {
-    background: "#fff",
-    padding: "15px",
-    borderRadius: "12px",
-    textAlign: "center",
-    maxWidth: "420px",
-    width: "100%",
-  },
-
-  modalImage: {
-    width: "100%",
-    height: "auto",
-    maxHeight: "75vh",
-    objectFit: "contain",
-    borderRadius: "10px",
-  },
-
-  modalBtn: {
-    marginTop: "10px",
-    padding: "14px",
-    width: "100%",
-    background: "#28a745",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    fontWeight: "bold",
-    fontSize: "16px",
-    position: "sticky",
-    bottom: "0",
   },
 
   productModal: {
