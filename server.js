@@ -9,7 +9,15 @@ import { fileURLToPath } from "url";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGIN || "").split(",").map(o => o.trim()).filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origen no permitido: ${origin}`));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 const resend = new Resend(process.env.RESEND_KEY);
