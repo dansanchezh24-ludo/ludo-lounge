@@ -4,7 +4,7 @@ import { trackEvent } from "./GoogleAnalytics";
 const STORAGE_KEY = "ll_email_popup_shown";
 const DELAY_MS = 5000;
 
-export default function EmailPopup() {
+export default function EmailPopup({ onDiscountEarned }) {
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
@@ -35,6 +35,8 @@ export default function EmailPopup() {
       if (res.ok) {
         setStatus("success");
         trackEvent("email_signup", { method: "popup" });
+        localStorage.setItem("ll_discount_10", "1");
+        onDiscountEarned?.();
         setTimeout(close, 2500);
       } else {
         setStatus("error");

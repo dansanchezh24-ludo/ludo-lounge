@@ -1,6 +1,8 @@
 import React from "react";
 
-export default function Cart({ isOpen, cart, total, onClose, onAdd, onRemove, onCheckout }) {
+export default function Cart({ isOpen, cart, total, hasDiscount, onClose, onAdd, onRemove, onCheckout }) {
+  const discountAmount = hasDiscount ? Math.round(total * 0.1) : 0;
+  const finalTotal = total - discountAmount;
   return (
     <>
       {/* Overlay oscuro detrás del carrito */}
@@ -36,7 +38,13 @@ export default function Cart({ isOpen, cart, total, onClose, onAdd, onRemove, on
         </div>
 
         <div style={styles.cartFooter}>
-          <b>Total: ${total}</b>
+          {hasDiscount && (
+            <div style={{ fontSize: 13, marginBottom: 4 }}>
+              <span style={{ color: "#666" }}>Subtotal: ${total}</span>
+              <span style={{ color: "#28a745", marginLeft: 12, fontWeight: 600 }}>Descuento 10%: -${discountAmount}</span>
+            </div>
+          )}
+          <b>Total: ${finalTotal}</b>
           <button
             onClick={onCheckout}
             disabled={!cart.length}

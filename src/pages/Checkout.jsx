@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-export default function Checkout({ cart, clearCart, onClose }) {
+export default function Checkout({ cart, clearCart, onClose, hasDiscount }) {
   const [step, setStep] = useState(1);
   const [orderId, setOrderId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,8 +19,10 @@ export default function Checkout({ cart, clearCart, onClose }) {
   });
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const discountAmount = hasDiscount ? Math.round(subtotal * 0.1) : 0;
+  const discountedSubtotal = subtotal - discountAmount;
   const shippingCost = selectedShipping ? selectedShipping.price : 0;
-  const total = subtotal + shippingCost;
+  const total = discountedSubtotal + shippingCost;
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -66,7 +68,8 @@ export default function Checkout({ cart, clearCart, onClose }) {
         phone: "52" + form.phone,
         paymentMethod: method,
         items: cart,
-        subtotal,
+        subtotal: discountedSubtotal,
+        discountAmount,
         shippingCarrier: selectedShipping?.carrier,
         shippingService: selectedShipping?.service,
         shippingCost,
@@ -162,6 +165,7 @@ export default function Checkout({ cart, clearCart, onClose }) {
 
             <div style={styles.totalBox}>
               <span>Subtotal productos:</span><span>${subtotal}</span>
+              {hasDiscount && <><span style={{ color: "#28a745" }}>Descuento 10%:</span><span style={{ color: "#28a745" }}>-${discountAmount}</span></>}
               <span>Envío:</span><span>{selectedShipping ? `$${selectedShipping.price}` : "—"}</span>
               <span style={{ fontWeight: 800 }}>Total:</span>
               <span style={{ fontWeight: 800, color: "#28a745" }}>${total}</span>
@@ -185,6 +189,7 @@ export default function Checkout({ cart, clearCart, onClose }) {
 
             <div style={styles.totalBox}>
               <span>Subtotal:</span><span>${subtotal}</span>
+              {hasDiscount && <><span style={{ color: "#28a745" }}>Descuento 10%:</span><span style={{ color: "#28a745" }}>-${discountAmount}</span></>}
               <span>Envío ({selectedShipping?.carrier}):</span><span>${shippingCost}</span>
               <span style={{ fontWeight: 800 }}>Total a pagar:</span>
               <span style={{ fontWeight: 800, color: "#28a745", fontSize: 18 }}>${total}</span>

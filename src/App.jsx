@@ -11,8 +11,8 @@ import WhatsAppButton from "./components/WhatsAppButton";
 import EmailPopup from "./components/EmailPopup";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
-const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
-// 111=UNO Clásico, 101=Monopoly HP, 62=Catan Clásico, 81=Telestrations,
+const TOP_SELLERS = new Set([111, 101, 62, 39, 29, 6, 41, 54, 50, 80]);
+// 111=UNO Clásico, 101=Monopoly HP, 62=Catan Clásico, 80=Chispas,
 // 39=Truth or Drink, 29=Star Wars Mandalorian, 6=Caperucita Roja,
 // 41=IQ Digits, 54=Casino Venecia, 50=Colour Code
 
@@ -24,6 +24,7 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [hasDiscount, setHasDiscount] = useState(() => !!localStorage.getItem("ll_discount_10"));
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -81,7 +82,7 @@ export default function App() {
     <>
       <GoogleAnalytics />
       <WhatsAppButton />
-      <EmailPopup />
+      <EmailPopup onDiscountEarned={() => setHasDiscount(true)} />
 
       {/* BIENVENIDA */}
       {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
@@ -204,6 +205,7 @@ export default function App() {
         cart={cart}
         total={total}
         onClose={() => setIsCartOpen(false)}
+        hasDiscount={hasDiscount}
         onAdd={addToCart}
         onRemove={removeFromCart}
         onCheckout={() => { setIsCartOpen(false); setShowCheckout(true); }}
@@ -216,6 +218,7 @@ export default function App() {
             cart={cart}
             clearCart={() => setCart([])}
             onClose={() => setShowCheckout(false)}
+            hasDiscount={hasDiscount}
           />
         </div>
       ) : null}
