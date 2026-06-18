@@ -8,6 +8,7 @@ import ProductCard from "./components/ProductCard";
 import Cart from "./components/Cart";
 import GoogleAnalytics, { trackEvent } from "./components/GoogleAnalytics";
 import WhatsAppButton from "./components/WhatsAppButton";
+import EmailPopup from "./components/EmailPopup";
 
 // IDs de los top 10 más vendidos (al menos 1 por categoría)
 const TOP_SELLERS = new Set([111, 101, 62, 81, 39, 29, 6, 41, 54, 50]);
@@ -80,6 +81,7 @@ export default function App() {
     <>
       <GoogleAnalytics />
       <WhatsAppButton />
+      <EmailPopup />
 
       {/* BIENVENIDA */}
       {showWelcome && <WelcomeModal onClose={() => setShowWelcome(false)} />}
