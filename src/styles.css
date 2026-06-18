@@ -748,6 +748,35 @@ section {
 }
 
 /* =====================
+   COMPARTIR PRODUCTO
+   ===================== */
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-share {
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.btn-share:hover {
+  background: #1da851;
+  transform: scale(1.08);
+}
+
+/* =====================
    WHATSAPP FLOTANTE
    ===================== */
 .whatsapp-float {

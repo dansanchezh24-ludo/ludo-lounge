@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /soporte/
+
+Sitemap: https://www.ludo-lounge.com/sitemap.xml
