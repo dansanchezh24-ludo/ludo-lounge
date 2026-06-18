@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { trackEvent } from "./GoogleAnalytics";
 
 const STORAGE_KEY = "ll_email_popup_shown";
-const DELAY_MS = 30000;
+const DELAY_MS = 5000;
 
 export default function EmailPopup() {
   const [visible, setVisible] = useState(false);
